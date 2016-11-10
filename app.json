@@ -1,7 +1,7 @@
 {
-  "name": "Ticketing",
+  "name": "TEDxGT Ticketing",
   "description": "A ticketing client to manage ticketing and registration for events",
-  "repository": "https://github.com/akeaswaran/ticketing",
+  "repository": "https://github.com/akeaswaran/tedxgt-ticketing",
   "logo": "http://node-js-sample.herokuapp.com/node.svg",
   "keywords": ["tickets"],
   "image": "heroku/nodejs",
