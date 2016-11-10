@@ -1,0 +1,28 @@
+{
+  "name": "tedxgt-ticketing",
+  "version": "0.0.1",
+  "description": "A simple web app to manage event registration and ticketing.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "db-run": "mongod --dbpath ./data/db",
+    "run-app": "npm-run-all -p -r db-run start"
+  },
+  "engines": {
+    "node": "0.12.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akeaswaran/tedxgt-ticketing"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "ejs": "2.3.3",
+    "express": "3.x",
+    "moment": "^2.15.2",
+    "mongoose": "^4.3.6",
+    "npm-run-all": "^3.1.1",
+    "sendgrid": "^2.0.0"
+  }
+}
