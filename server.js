@@ -34,8 +34,16 @@ require('./models/attendee');
 require('./models/ticket');
 require('./routes')(app);
 
-app.get('/', function(request, response) {
+app.get('/', function (request, response) {
     response.render('pages/index');
+});
+
+app.get('/admin', function (request, response) {
+    response.render('pages/adminBarrier', { adminKey : process.env.adminKey });
+});
+
+app.get('/adminPortal', function (request, response) {
+   response.render('pages/adminPortal');
 });
 
 // app.get('/event/:id', function(req, res) {
