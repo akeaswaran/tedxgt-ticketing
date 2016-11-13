@@ -6,9 +6,7 @@ sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDG
 
 var moment = require('moment');
 
-var mongoUri =
-    process.env.MONGOLAB_URI ||
-    'mongodb://localhost/ticketing-ake';
+var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/ticketing-ake';
 mongoose.connect(mongoUri);
 var db = mongoose.connection;
 db.on('error', function () {
