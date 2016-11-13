@@ -46,36 +46,19 @@ app.get('/adminPortal', function (request, response) {
    response.render('pages/adminPortal');
 });
 
-// app.get('/event/:id', function(req, res) {
-//     var Event = mongoose.model('Event');
-//     Event.findOne({'_id' : req.params.id}, function(error, result) {
-//         if (error) {
-//             console.log("Could not find event with id " + req.params.id);
-//             res.redirect('/');
-//         } else {
-//             res.render('pages/event', {
-//                 event: result
-//             });
-//         }
-//     });
-//
-//     // res.render('pages/event', {
-//     //     event: {
-//     //         name: "TEST",
-//     //         description: "TEST",
-//     //         location: "123 test ln",
-//     //         startDate: moment(),
-//     //         endDate:moment().startOf('day'),
-//     //         url: "https://google.com",
-//     //         attendees: [],
-//     //         tickets: [],
-//     //         numTickets: 100,
-//     //         miscData: [],
-//     //         closed: false
-//     //     }
-//     // });
-//
-// });
+app.get('/event/:id', function(req, res) {
+    var Event = mongoose.model('Event');
+    Event.findOne({'_id' : req.params.id}, function(error, result) {
+        if (error) {
+            console.log("Could not find event with id " + req.params.id);
+            res.redirect('/');
+        } else {
+            res.render('pages/event', {
+                event: result
+            });
+        }
+    });
+});
 
 //post listening
 app.listen(app.get('port'), function() {
