@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 var Attendee = require('./attendee');
-var Ticket = require('./ticket');
+var TicketCategory = require('./ticket-category');
 
 var EventSchema = new Schema({
     name: String,
@@ -11,8 +11,8 @@ var EventSchema = new Schema({
     endDate: Date,
     url: String,
     attendees: [Attendee],
-    tickets: [Ticket],
-    numTickets: Number,
+    ticketCategories: [TicketCategory],
+    totalTickets: Number,
     miscData: Array,
     closed: Boolean
 });
