@@ -68,7 +68,7 @@ app.get('/admin/attendees-list', function(req, res) {
         if (error) {
             res.redirect('/adminPortal');
         } else {
-            res.render('pages/events-list', {
+            res.render('pages/attendees-list', {
                 event: result
             });
         }
@@ -94,7 +94,7 @@ app.get('/admin/event/:id/tickets', function(req, res) {
             console.log("Could not find event with id " + req.params.id);
             res.redirect('/adminPortal');
         } else {
-            res.render('pages/ticket-list', {
+            res.render('pages/tickets-list', {
                 event: result
             });
         }
