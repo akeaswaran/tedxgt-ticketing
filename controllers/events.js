@@ -1,9 +1,9 @@
 var mongoose = require('mongoose'),
-    Event = mongoose.model('Event'),
-    sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
+    Event = mongoose.model('Event');
+    //sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
 
-var senderName = process.env.SENDER_NAME;
-var senderEmail = process.env.SENDER_EMAIL;
+//var senderName = process.env.SENDER_NAME;
+//var senderEmail = process.env.SENDER_EMAIL;
 
 exports.findAll = function(req, res){
     Event.find({},function(err, results) {

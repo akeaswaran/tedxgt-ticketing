@@ -1,8 +1,6 @@
 var express = require('express'),
 mongoose = require('mongoose'),
-bodyParser = require('body-parser'),
-fs = require('fs'),
-sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
+bodyParser = require('body-parser');
 
 var moment = require('moment');
 
