@@ -73,6 +73,8 @@
 
 <!-- Main JS (Do not remove) -->
 <script src="js/main.js"></script>
+<script src="js/moment.js"></script>
+<script src="js/cookie.js"></script>
 <script>
     $( "#admin-form" ).submit(function( event ) {
         event.preventDefault();
@@ -81,7 +83,8 @@
         var rightKey = <%= adminKey %>;
 
         if (enterKey === rightKey) {
-            $(location).attr('href', 'adminPortal');
+            setCookie("adminStatus", "true", 365);
+            window.location.href = "adminPortal";
         } else {
             $('#error-msg').removeClass('hide');
         }
