@@ -108,7 +108,11 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><%= events.length %></div>
+                            <% if (events.length > 1 || events.length == 0) { %>
                             <div>Events</div>
+                            <% } else { %>
+                            <div>Event</div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -134,7 +138,11 @@
                             <% sumAttendees += event.attendees.length; %>
                             <%});%>
                             <div class="huge"><%= sumAttendees %></div>
+                            <% if (sumAttendees > 1 || sumAttendees == 0) { %>
                             <div>Attendees</div>
+                            <% } else { %>
+                            <div>Attendee</div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -200,15 +208,29 @@
                         <% event.ticketCategories.forEach(function(ticketCategory) { %>
                         <% sumTickets += ticketCategory.numTickets; %>
                         <%});%>
-                        <td><a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a></td>
+                        <td>
+                            <% if (event.attendees.length > 0) { %>
+                                <% if (sumTicketsSold > 0) { %>
+                                    <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
+                                <% } else { %>
+                                    <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
+                                <% } %>
+                            <% } else { %>
+                                <% if (sumTickets > 0) { %>
+                                    <%= event.attendees.length %> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
+                                <% } else { %>
+                                    <%= event.attendees.length %> / <%= sumTickets %>
+                                <% } %>
+                            <% }%>
+                        </td>
                     </tr>
                     <%});%>
                     </tbody>
                 </table>
                 <% } else { %>
-                <div class="panel-body">
-                    <p>No events available.</p>
-                </div>
+                    <div class="panel-body">
+                        <p>No events available.</p>
+                    </div>
                 <% }%>
             </div>
         </div>
