@@ -253,6 +253,30 @@ h6 {
     margin-left: -40px;
     bottom: 0;
 }
+.faux-section-heading {
+    float: left;
+    width: 100%;
+    clear: both;
+}
+.faux-section-heading h1 {
+    font-size: 50px;
+    font-weight: 300;
+    color: #444;
+    position: relative;
+    display: block;
+    line-height: 1.5;
+}
+.faux-section-heading h1:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 80px;
+    height: 2px;
+    background: #e62b1e;
+    left: 50%;
+    margin-left: -40px;
+    bottom: 0;
+}
 @media screen and (max-width: 768px) {
     .section-heading h2 {
         font-size: 30px;
@@ -263,8 +287,17 @@ h6 {
     line-height: 1.5;
     color: #929292;
 }
+.faux-section-heading h3 {
+    font-weight: 300;
+    line-height: 1.5;
+    color: #929292;
+}
 @media screen and (max-width: 768px) {
     .section-heading h3 {
+        font-size: 24px !important;
+        line-height: 34px;
+    }
+    .faux-section-heading h3 {
         font-size: 24px !important;
         line-height: 34px;
     }

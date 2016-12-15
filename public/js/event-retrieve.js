@@ -11,10 +11,11 @@ var eventList = $("#event-list");
 
 $.get("/events", function(data) {
     if (data != null && Object.prototype.toString.call(data) === '[object Array]' && data.length > 0) {
-        for (var item in data) {
+        data.forEach(function(item) {
+            console.log(item);
             var htmlStub = buildHTML(item);
             eventList.append(htmlStub);
-        }
+        });
     } else {
         eventList.append("<h3><span style=\"color:#444\">No events coming up. Check out our previous events below!</span></h3>");
     }
@@ -23,14 +24,15 @@ $.get("/events", function(data) {
 
 function buildHTML(item) {
     var html = "<div id=\"event-id-" + item.id + "\" class=\"col-md-8 col-md-offset-2 subtext to-animate\">";
-    html += "<h2 style=\"padding-top:30px;\">item.name</h2>";
-    html += "<h3><span style=\"color:#444\">" + moment(item.startDate).format('LTS') + " - " + moment(item.endDate).format('LTS') + " | " + moment(item.startDate).format('LL') + " | " + item.location + "</span><br/></h3>";
-    html += "<p> " + item.description + "</p>";
+    html += "<h2 style=\"padding-top:30px;\">"  + item.name + "</h2>";
+    html += "<h3 class='subtext'><span style=\"color:#444\">" + moment(item.startDate).format('LT') + " | " + moment(item.startDate).format('LL') + "</span></h3>";
+    html += "<h3> " + item.location + "</h3>";
+    html += "<h3> " + item.description + "</h3>";
 
     if (moment().isAfter(item.startDate) || item.closed) {
         html += "<p><a class=\"btn\" style=\"background:#e62b1e; color:rgba(255,255,255,0.5);\" target=\"_blank\" href=\"#\">Registration Closed</a></p>";
     } else {
-        html += "<p><a class=\"btn\" style=\"background:#e62b1e; color:rgba(255,255,255,1.0);\" target=\"_blank\" href=\"/event?id=" + item.id + "\">Reserve Seats!</a></p>";
+        html += "<p><a class=\"btn\" style=\"background:#e62b1e; color:rgba(255,255,255,1.0);\" target=\"_blank\" href=\"/event/" + item._id + "\">Reserve Seats!</a></p>";
     }
     html += "</div>";
 

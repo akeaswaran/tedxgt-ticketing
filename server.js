@@ -124,7 +124,18 @@ app.get('/event/:id', function(req, res) {
             res.redirect('/');
         } else {
             res.render('pages/event', {
-                event: result
+                event: {
+                    _id: result._id,
+                    name: result.name,
+                    description: result.description,
+                    location: result.location,
+                    url: result.url,
+                    closed: result.closed,
+                    ticketCategories: result.ticketCategories,
+                    startDate : moment(result.startDate).format('LT'),
+                    startDay : moment(result.endDate).format('LL')
+                },
+                curDate: moment().format('llll')
             });
         }
     });
