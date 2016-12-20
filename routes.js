@@ -19,4 +19,11 @@ module.exports = function(app) {
     app.post('/tickets', tickets.add);
     app.put('/tickets/:id', tickets.update);
     app.delete('/tickets/:id', tickets.delete);
+
+    var accounts = require('./controllers/accounts');
+    app.get('/accounts', accounts.findAll);
+    app.get('/accounts/:id', accounts.findById);
+    app.post('/accounts', accounts.add);
+    app.put('/accounts/:id', accounts.update);
+    app.delete('/accounts/:id', accounts.delete);
 }

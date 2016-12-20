@@ -9,13 +9,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><%= orgName %> Admin</title>
+    <title>Home | TEDxGeorgiaTech Event Management</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/css/bootstrap.css" rel="stylesheet">
-
-    <!-- MetisMenu CSS -->
-    <link href="/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
@@ -34,271 +31,279 @@
 
 </head>
 
+<% if (account.approved === false || account.approved === null) {%>
+<body class="container" style="background: white">
+<div class="row" style="padding-top: 20px;">
+    <div class="col-lg-8 col-lg-offset-2">
+        <p class="lead">Your account has not yet been approved by an administrator. If you believe this is in error, please email <a href="mailto:tedxgeorgiatech@gmail.com">TEDxGeorgiaTech</a> with a description of your case.</p>
+    </div>
+</div>
+</body>
+<% } else { %>
 <body class="container" style="background:white">
-    <div class="modal fade" id="new-event-modal" tabindex="-1" role="dialog" aria-labelledby="new-event-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="new-event-modal-label">New Event</h4>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="event-name" class="control-label">Name</label>
-                            <input class="form-control" id="event-name">
-                        </div>
-                        <div class="form-group">
-                            <label for="event-description" class="control-label">Description</label>
-                            <textarea class="form-control" id="event-description"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="event-location" class="control-label">Location</label>
-                            <input class="form-control" id="event-location">
-                        </div>
-                        <div class="form-group">
-                            <label for="event-url" class="control-label">URL</label>
-                            <input type="text" class="form-control" id="event-url">
-                        </div>
-                        <div class="form-group">
-                            <label for="event-start-date" class="control-label">Start Date</label>
-                            <div class='input-group date' id='event-start-date'>
-                                <input type='text' class="form-control" />
-                                <span class="input-group-addon">
+<div class="modal fade" id="new-event-modal" tabindex="-1" role="dialog" aria-labelledby="new-event-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="new-event-modal-label">New Event</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="event-name" class="control-label">Name</label>
+                        <input class="form-control" id="event-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="event-description" class="control-label">Description</label>
+                        <textarea class="form-control" id="event-description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-location" class="control-label">Location</label>
+                        <input class="form-control" id="event-location">
+                    </div>
+                    <div class="form-group">
+                        <label for="event-url" class="control-label">URL</label>
+                        <input type="text" class="form-control" id="event-url">
+                    </div>
+                    <div class="form-group">
+                        <label for="event-start-date" class="control-label">Start Date</label>
+                        <div class='input-group date' id='event-start-date'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
                                         <span class="fa fa-calendar"></span>
                                     </span>
-                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="event-start-date" class="control-label">End Date</label>
-                            <div class='input-group date' id='event-end-date'>
-                                <input type='text' class="form-control" />
-                                <span class="input-group-addon">
-                                        <span class="fa fa-calendar"></span>
-                                    </span>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-start-date" class="control-label">End Date</label>
+                        <div class='input-group date' id='event-end-date'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button id="save-event" type="button" class="btn btn-danger" data-dismiss="modal">Save</button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="save-event" type="button" class="btn btn-danger" data-dismiss="modal">Save</button>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <h1 class="page-header">
-                Home
-                <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#new-event-modal">
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Home
+            <% if (account.isAdmin === true) {%>
+            <div class="btn-group pull-right" role="group" aria-label="options">
+                <a href="/accountRequests" class="btn btn-default">Account Requests</a>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#new-event-modal">
                     Add Event
                 </button>
-            </h1>
-        </div>
-        <!-- /.col-lg-12 -->
+            </div>
+            <% } else { %>
+            <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#new-event-modal">
+                Add Event
+            </button>
+            <% } %>
+        </h1>
     </div>
-    <!-- /.row -->
-    <div class="row">
-        <div class="col-lg-4 col-md-6">
-            <div class="panel panel-red">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-calendar fa-5x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <div class="huge"><%= events.length %></div>
-                            <% if (events.length > 1 || events.length == 0) { %>
-                            <div>Events</div>
-                            <% } else { %>
-                            <div>Event</div>
-                            <% } %>
-                        </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-4 col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-calendar fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge"><%= events.length %></div>
+                        <% if (events.length > 1 || events.length == 0) { %>
+                        <div>Events</div>
+                        <% } else { %>
+                        <div>Event</div>
+                        <% } %>
                     </div>
                 </div>
-                <a href="admin/events-list">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
             </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="panel panel-red">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-male fa-5x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <% var sumAttendees = 0;%>
-                            <% events.forEach(function(event) { %>
-                            <% sumAttendees += event.attendees.length; %>
-                            <%});%>
-                            <div class="huge"><%= sumAttendees %></div>
-                            <% if (sumAttendees > 1 || sumAttendees == 0) { %>
-                            <div>Attendees</div>
-                            <% } else { %>
-                            <div>Attendee</div>
-                            <% } %>
-                        </div>
-                    </div>
+            <a href="admin/events-list">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
                 </div>
-                <a href="#">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="panel panel-red">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <i class="fa fa-dollar fa-5x"></i>
-                        </div>
-                        <div class="col-xs-9 text-right">
-                            <% var sumRevenue = 0;%>
-                            <% events.forEach(function(event) { %>
-                            <% event.ticketCategories.forEach(function (ticketCategory) { %>
-                            <% sumRevenue += (ticketCategory.price * ticketCategory.numTicketsSold); %>
-                            <% }); %>
-                            <%});%>
-                            <div class="huge">$<%= sumRevenue %></div>
-                            <div>Revenue</div>
-                        </div>
-                    </div>
-                </div>
-                <a href="#">
-                    <div class="panel-footer">
-                        <span class="pull-left">View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
-                </a>
-            </div>
+            </a>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Events</h3>
-                </div>
-                <% if (events.length > 0) { %>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Start Date</th>
-                        <th>Attendees / Tickets</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <% events.forEach(function(event) { %>
-                    <tr>
-                        <td><a href="/admin/event/<%= event._id %>/settings"><%= event.name %></a></td>
-                        <td><%= moment(event.startDate).format('LL') %></td>
-                        <% var sumTickets = 0;%>
-                        <% event.ticketCategories.forEach(function(ticketCategory) { %>
-                        <% sumTickets += ticketCategory.numTickets; %>
+    <div class="col-lg-4 col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-male fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <% var sumAttendees = 0;%>
+                        <% events.forEach(function(event) { %>
+                        <% sumAttendees += event.attendees.length; %>
                         <%});%>
-                        <td>
-                            <% if (event.attendees.length > 0) { %>
-                                <% if (sumTicketsSold > 0) { %>
-                                    <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
-                                <% } else { %>
-                                    <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
-                                <% } %>
-                            <% } else { %>
-                                <% if (sumTickets > 0) { %>
-                                    <%= event.attendees.length %> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
-                                <% } else { %>
-                                    <%= event.attendees.length %> / <%= sumTickets %>
-                                <% } %>
-                            <% }%>
-                        </td>
-                    </tr>
-                    <%});%>
-                    </tbody>
-                </table>
-                <% } else { %>
-                    <div class="panel-body">
-                        <p>No events available.</p>
+                        <div class="huge"><%= sumAttendees %></div>
+                        <% if (sumAttendees > 1 || sumAttendees == 0) { %>
+                        <div>Attendees</div>
+                        <% } else { %>
+                        <div>Attendee</div>
+                        <% } %>
                     </div>
-                <% }%>
+                </div>
             </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
         </div>
     </div>
+    <div class="col-lg-4 col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-dollar fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <% var sumRevenue = 0;%>
+                        <% events.forEach(function(event) { %>
+                        <% event.ticketCategories.forEach(function (ticketCategory) { %>
+                        <% sumRevenue += (ticketCategory.price * ticketCategory.numTicketsSold); %>
+                        <% }); %>
+                        <%});%>
+                        <div class="huge">$<%= sumRevenue %></div>
+                        <div>Revenue</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Events</h3>
+            </div>
+            <% if (events.length > 0) { %>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Start Date</th>
+                    <th>Attendees / Tickets</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% events.forEach(function(event) { %>
+                <tr>
+                    <td><a href="/admin/event/<%= event._id %>/settings"><%= event.name %></a></td>
+                    <td><%= moment(event.startDate).format('LL') %></td>
+                    <% var sumTickets = 0;%>
+                    <% event.ticketCategories.forEach(function(ticketCategory) { %>
+                    <% sumTickets += ticketCategory.numTickets; %>
+                    <%});%>
+                    <td>
+                        <% if (event.attendees.length > 0) { %>
+                        <% if (sumTicketsSold > 0) { %>
+                        <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
+                        <% } else { %>
+                        <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
+                        <% } %>
+                        <% } else { %>
+                        <% if (sumTickets > 0) { %>
+                        <%= event.attendees.length %> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
+                        <% } else { %>
+                        <%= event.attendees.length %> / <%= sumTickets %>
+                        <% } %>
+                        <% }%>
+                    </td>
+                </tr>
+                <%});%>
+                </tbody>
+            </table>
+            <% } else { %>
+            <div class="panel-body">
+                <p>No events available.</p>
+            </div>
+            <% }%>
+        </div>
+    </div>
+</div>
 
-    <!-- jQuery -->
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/moment.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/moment.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="/metisMenu/metisMenu.min.js"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="/js/sb-admin-2.min.js"></script>
-
-    <script src="/js/cookie.js"></script>
-
-    <script>
-        $(function () {
-            $('#event-start-date').datetimepicker({
-                minDate: moment()
-            });
-            $('#event-end-date').datetimepicker({
-                minDate: moment()
-            });
+<script>
+    $(function () {
+        $('#event-start-date').datetimepicker({
+            minDate: moment()
         });
+        $('#event-end-date').datetimepicker({
+            minDate: moment()
+        });
+    });
 
-        $('#save-event').click(function(event) {
-            event.preventDefault();
-            if ($('#event-name').val() !== null
-                && $('#event-description').val() !== null
-                && $('#event-location').val() !== null
-                && $('#event-url').val() !== null
-                && $('#event-start-date').data("DateTimePicker").date() !== null
-                && $('#event-end-date').data("DateTimePicker").date() !== null
-            ) {
-                var eventName = $('#event-name').val();
-                var eventDescription = $('#event-description').val();
-                var eventLocation = $('#event-location').val();
-                var eventUrl = $('#event-url').val();
-                var startDate = $('#event-start-date').data("DateTimePicker").date().toDate();
-                var endDate = $('#event-end-date').data("DateTimePicker").date().toDate();
+    $('#save-event').click(function(event) {
+        event.preventDefault();
+        if ($('#event-name').val() !== null
+            && $('#event-description').val() !== null
+            && $('#event-location').val() !== null
+            && $('#event-url').val() !== null
+            && $('#event-start-date').data("DateTimePicker").date() !== null
+            && $('#event-end-date').data("DateTimePicker").date() !== null
+        ) {
+            var eventName = $('#event-name').val();
+            var eventDescription = $('#event-description').val();
+            var eventLocation = $('#event-location').val();
+            var eventUrl = $('#event-url').val();
+            var startDate = $('#event-start-date').data("DateTimePicker").date().toDate();
+            var endDate = $('#event-end-date').data("DateTimePicker").date().toDate();
 
 
-                var postData = {
-                    "name" : eventName,
-                    "location" : eventLocation,
-                    "description" : eventDescription,
-                    "url" : eventUrl,
-                    "start-date" : startDate,
-                    "end-date" : endDate
-                }
-                console.log(postData);
-
-                $.post("/events", postData, function(data) {
-                    console.log('post result ' + data);
-                });
-            } else {
-                console.log('invalid data');
+            var postData = {
+                "name" : eventName,
+                "location" : eventLocation,
+                "description" : eventDescription,
+                "url" : eventUrl,
+                "start-date" : startDate,
+                "end-date" : endDate
             }
-        });
+            console.log(postData);
+
+            $.post("/events", postData, function(data) {
+                console.log('post result ' + data);
+            });
+        } else {
+            console.log('invalid data');
+        }
+    });
 
 
-    </script>
+</script>
 
 </body>
-
+<% }%>
 </html>

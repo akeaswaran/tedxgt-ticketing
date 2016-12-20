@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "db-run": "mongod --dbpath ./data/db",
-    "run-app": "npm-run-all -p -r db-run start"
+    "test": "make test",
+    "run-app": "npm-run-all -p -r start db-run",
+    "run-test": "npm-run-all -p -r db-run start"
   },
   "engines": {
     "node": "0.12.7"
@@ -17,12 +19,24 @@
   },
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^1.0.1",
+    "bluebird": "^3.4.6",
     "body-parser": "^1.14.2",
+    "bootstrap-validator": "^0.11.8",
+    "connect-flash": "^0.1.1",
+    "crypto": "0.0.3",
     "ejs": "2.3.3",
     "express": "3.x",
+    "gen-uuid": "0.0.1",
+    "mocha": "^3.2.0",
     "moment": "^2.15.2",
     "mongoose": "^4.3.6",
     "npm-run-all": "^3.1.1",
-    "sendgrid": "^2.0.0"
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.0.0",
+    "sendgrid": "^2.0.0",
+    "should": "^11.1.2",
+    "winston": "^2.3.0"
   }
 }
