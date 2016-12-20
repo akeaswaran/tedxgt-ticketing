@@ -172,7 +172,7 @@ app.post('/login',
 
 app.get('/logout', function(req, res) {
     req.logout();
-    res.redirect('pages/index');
+    res.redirect('/');
 });
 
 app.get('/ping', function(req, res){
@@ -180,7 +180,12 @@ app.get('/ping', function(req, res){
 });
 
 app.get('/', function (request, response) {
-    response.render('pages/index');
+    Event.findAll(request, response, function(results) {
+        res.render('pages/index', {
+            events: results,
+            moment: moment
+        });
+    });
 });
 
 app.get('/event/:id', function(req, res) {
@@ -233,8 +238,9 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res) {
-    res.status(err.status || 500);
     handleError(err, 'warn');
+    console.log(err);
+    res.status(err.status || 500);
 });
 
 
