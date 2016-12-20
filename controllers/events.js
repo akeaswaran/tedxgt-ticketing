@@ -26,16 +26,16 @@ exports.update = function(req, res) {
     var id = req.params.id;
     console.log('Received event id: ' + id);
     var updates = req.body;
-    Event.where({ _id : id}).update({ $set: updates }, function (err, numberAffected) {
+    Event.update({ _id: id }, updates, function (err, raw) {
         if (err) return console.log('ERROR: ' + err);
-        console.log('Updated ' + numberAffected.nModified + ' events');
+        console.log('Updated ' + raw.nModified + ' events');
         return res.send(202);
     });
 }
 
 exports.delete = function(req, res) {
     var id = req.params.id;
-    Event.remove({'_id':id},function(result) {
+    Event.remove({'_id':id}, function(result) {
         return res.send(result);
     });
 };

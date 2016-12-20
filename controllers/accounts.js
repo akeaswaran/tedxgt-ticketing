@@ -20,18 +20,18 @@ exports.add = function(req, res) {
         if (err) return console.log(err);
         return res.send(event);
     });
-}
+};
 
 exports.update = function(req, res) {
     var id = req.params.id;
     console.log('Received event id: ' + id);
     var updates = req.body;
-    Account.where({ _id : id}).update({ $set: updates }, function (err, numberAffected) {
+    Account.update({ _id: id }, updates, function (err, raw) {
         if (err) return console.log('ERROR: ' + err);
-        console.log('Updated ' + numberAffected.nModified + ' events');
+        console.log('Updated ' + raw.nModified + ' events');
         return res.send(202);
     });
-}
+};
 
 exports.delete = function(req, res) {
     var id = req.params.id;
