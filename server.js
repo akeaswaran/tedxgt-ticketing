@@ -65,7 +65,7 @@ var Event = require('./controllers/events');
 
 
 //DB Setup
-var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/ticketing-ake';
+var mongoUri = process.env.MONGODB_URI || 'mongodb://localhost/ticketing-ake';
 mongoose.Promise = require('bluebird');
 mongoose.connect(mongoUri);
 var db = mongoose.connection;
