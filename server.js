@@ -64,7 +64,7 @@ require('./models/attendee');
 require('./models/ticket');
 require('./routes')(app);
 
-var templatesDir = express.static(__dirname + '/templates');
+var templatesDir = __dirname + '/templates';
 
 // Prepare nodemailer transport object
 var transport = nodemailer.createTransport({
