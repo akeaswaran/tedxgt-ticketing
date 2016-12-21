@@ -138,7 +138,86 @@ app.get('/accountRequests', function(request, response) {
     } else {
         response.redirect('/admin');
     }
-})
+});
+
+app.post('/adminRegister', function(req, res) {
+    Account.register(new Account({ username : req.body.username, name: req.body.name, email: req.body.email, approved: true, isAdmin: true }), req.body.password, function(err, account) {
+        if (err) {
+            handleError(err, 'warn');
+            return res.render('register', { error : err.message });
+        }
+
+        passport.authenticate('local')(req, res, function () {
+            req.session.save(function (err) {
+                if (err) {
+                    handleError("ERROR IN LOCAL AUTH AFTER REQUESTACCOUNT: " + err, 'warn');
+                    res.send(500);
+                }
+                res.redirect('/admin', { account : account });
+            });
+        });
+
+        //send notif email to both user and admins
+        /*var userNotifTemplate = new EmailTemplate(path.join(templatesDir, 'request-user-notification'));
+        userNotifTemplate.render({ account : account, host: req.protocol + '://' + req.get('host') }, function(err, results) {
+            if (err) {
+                handleError(err, 'warn');
+            }
+
+            transport.sendMail({
+                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+                to: account.email,
+                subject: 'Account Request for ' + account.name + ' Successful!',
+                html: results.html
+            }, function (err, responseStatus) {
+                if (err) {
+                    handleError(err, 'warn');
+                }
+                handleError(responseStatus.message, 'info');
+            })
+        });
+
+        var adminRequestTemplate = new EmailTemplate(path.join(templatesDir, 'request-notification'));
+        mongoose.model('Account').find()
+            .where('isAdmin', true)
+            .where('approved', true)
+            .sort('name')
+            .then(
+                function(docs) {
+                    async.mapLimit(docs, docs.length, function (acc, next) {
+                        adminRequestTemplate.render(acc, function (err, results) {
+                            if (err) {
+                                return next(err);
+                            }
+
+                            transport.sendMail({
+                                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+                                to: acc.email,
+                                subject: 'New account request from ' + account.name,
+                                html: results.html
+                            }, function (err, responseStatus) {
+                                if (err) {
+                                    return next(err);
+                                }
+                                next(null, responseStatus.message);
+                            });
+                        });
+                    }, function (err) {
+                        if (err) {
+                            handleError(err, 'warn')
+                        }
+
+                        handleError('Succesfully sent ' + users.length + ' messages', 'info');
+                    });
+                },
+                function(error) {
+                    if (error) {
+                        handleError(err, 'warn');
+                    }
+                }
+            );*/
+    });
+});
 
 app.post('/requestAccount', function(req, res) {
     Account.register(new Account({ username : req.body.username, name: req.body.name, email: req.body.email, approved: false, isAdmin: false }), req.body.password, function(err, account) {
