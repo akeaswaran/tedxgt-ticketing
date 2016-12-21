@@ -64,7 +64,7 @@ require('./models/attendee');
 require('./models/ticket');
 require('./routes')(app);
 
-var templatesDir = path.resolve(__dirname, '..', 'templates');
+var templatesDir = express.static(__dirname + '/templates');
 
 // Prepare nodemailer transport object
 var transport = nodemailer.createTransport({
@@ -204,44 +204,23 @@ app.post('/requestAccount', function(req, res) {
         });
 
         var adminRequestTemplate = new EmailTemplate(path.join(templatesDir, 'request-notification'));
-        mongoose.model('Account').find()
-            .where('isAdmin', true)
-            .where('approved', true)
-            .sort('name')
-            .then(
-                function(docs) {
-                    async.mapLimit(docs, docs.length, function (acc, next) {
-                        adminRequestTemplate.render(acc, function (err, results) {
-                            if (err) {
-                                return next(err);
-                            }
+        adminRequestTemplate.render(acc, function (err, results) {
+            if (err) {
+                return next(err);
+            }
 
-                            transport.sendMail({
-                                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
-                                to: acc.email,
-                                subject: 'New account request from ' + account.name,
-                                html: results.html
-                            }, function (err, responseStatus) {
-                                if (err) {
-                                    return next(err);
-                                }
-                                next(null, responseStatus.message);
-                            });
-                        });
-                    }, function (err) {
-                        if (err) {
-                            handleError(err, 'warn')
-                        }
-
-                        handleError('Succesfully sent ' + users.length + ' messages', 'info');
-                    });
-                },
-                function(error) {
-                    if (error) {
-                        handleError(err, 'warn');
-                    }
+            transport.sendMail({
+                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+                to: 'tedxgeorgiatech@gmail.com',
+                subject: 'New account request from ' + account.name,
+                html: results.html
+            }, function (err, responseStatus) {
+                if (err) {
+                    return next(err);
                 }
-            );
+                next(null, responseStatus.message);
+            });
+        });
     });
 });
 
