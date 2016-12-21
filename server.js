@@ -236,7 +236,7 @@ app.post('/login',
 );
 
 app.post('/send-deny-email', function(request, response) {
-    var requestTemplate = new EmailTemplate(path.join(templatesDir, 'request-approved'));
+    var requestTemplate = new EmailTemplate(path.join(templatesDir, 'request-denied'));
     requestTemplate.render({}, function (err, results) {
         if (err) {
             response.send(500);
