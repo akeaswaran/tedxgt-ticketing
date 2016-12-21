@@ -246,7 +246,7 @@ app.post('/send-deny-email', function(request, response) {
         transport.sendMail({
             from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
             to: request.body.email,
-            subject: 'Account Request Approved!',
+            subject: 'Account Request Denied',
             html: results.html
         }, function (err, responseStatus) {
             if (err) {
