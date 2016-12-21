@@ -185,7 +185,7 @@ app.post('/requestAccount', function(req, res) {
 
         //send notif email to both user and admins
         var userNotifTemplate = new EmailTemplate(path.join(templatesDir, 'request-user-notification'));
-        userNotifTemplate.render({ account : account, host: req.protocol + '://' + req.get('host') }, function(err, results) {
+        userNotifTemplate.render({ account : account }, function(err, results) {
             if (err) {
                 handleError(err, 'warn');
             }
@@ -204,7 +204,7 @@ app.post('/requestAccount', function(req, res) {
         });
 
         var adminRequestTemplate = new EmailTemplate(path.join(templatesDir, 'request-notification'));
-        adminRequestTemplate.render(acc, function (err, results) {
+        adminRequestTemplate.render({ account : account, host: req.protocol + '://' + req.get('host') }, function (err, results) {
             if (err) {
                 return next(err);
             }
