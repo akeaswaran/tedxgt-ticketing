@@ -6,13 +6,6 @@
     font-style: normal;
 }
 
-/* =======================================================
-*
-* 	Template Style
-*	Edit this section
-*
-* ======================================================= */
-
 body {
     font-family: "Source Sans Pro", Arial, sans-serif;
     font-weight: 400;
@@ -388,7 +381,7 @@ h6 {
     display: -moz-inline-stack;
     display: inline-block;
     zoom: 1;
-    *display: inline;
+    display: inline;
     width: 25px;
     height: 3px;
     color: #e62b1e;
