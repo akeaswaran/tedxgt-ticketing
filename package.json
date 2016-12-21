@@ -8,7 +8,7 @@
     "db-run": "mongod --dbpath ./data/db",
     "test": "make test",
     "run-app": "npm-run-all -p -r start db-run",
-    "run-test": "npm-run-all -p -r db-run start"
+    "run-test": "npm-run-all -p -r db-run test"
   },
   "engines": {
     "node": "0.12.7"
