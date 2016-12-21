@@ -262,7 +262,7 @@ app.post('/send-deny-email', function(request, response) {
 
 app.post('/send-approve-email', function(request, response) {
     var requestTemplate = new EmailTemplate(path.join(templatesDir, 'request-approved'));
-    requestTemplate.render({}, function (err, results) {
+    requestTemplate.render({ host: req.protocol + '://' + req.get('host') }, function (err, results) {
         if (err) {
             response.send(500);
             return handleError(err, 'warn');
