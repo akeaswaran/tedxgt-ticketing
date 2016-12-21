@@ -56,3 +56,4 @@ data
 .DS_Store
 /*.env
 dump
+.env

@@ -99,7 +99,17 @@
                     console.log('update success');
                 }
 
-                location.reload();
+                $.ajax({
+                    url: '/send-approve-email',
+                    type: 'POST',
+                    data: account.email,
+                    success: function(data) {
+                        if (data) {
+                            console.log('deny success');
+                        }
+                        location.reload();
+                    }
+                });
             }
         });
     });
@@ -121,9 +131,21 @@
                     console.log('delete success');
                 }
 
-                location.reload();
+                $.ajax({
+                    url: '/send-deny-email',
+                    type: 'POST',
+                    data: account.email,
+                    success: function(data) {
+                        if (data) {
+                            console.log('deny success');
+                        }
+                        location.reload();
+                    }
+                });
             }
         });
+
+
     });
 </script>
 

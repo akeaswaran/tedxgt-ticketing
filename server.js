@@ -1,5 +1,6 @@
 'use strict';
 require('newrelic');
+
 var express = require('express'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser'),
@@ -93,7 +94,7 @@ app.get('/admin', function (request, response) {
     if (request.isAuthenticated()) {
         response.redirect('/adminPortal');
     } else {
-        response.render('pages/adminBarrier', {
+        response.render('pages/admin-barrier', {
             account: null,
             adminEmail : process.env.ADMIN_EMAIL
         });
@@ -127,7 +128,7 @@ app.get('/accounts-list', function (request, response) {
 app.get('/adminPortal', function (request, response) {
     if (request.isAuthenticated()) {
         Event.findAll(request, response, function(results) {
-            response.render('pages/adminPortal', {
+            response.render('pages/admin-portal', {
                 orgName : 'TEDxGeorgiaTech',
                 events : results,
                 moment: moment,
@@ -148,7 +149,7 @@ app.get('/accountRequests', function(request, response) {
             .sort('name')
             .then(
                 function(docs) {
-                    response.render('pages/accountRequests', {
+                    response.render('pages/account-requests', {
                         requests: docs,
                         moment: moment
                     });
@@ -188,7 +189,7 @@ app.post('/requestAccount', function(req, res) {
         var userNotifTemplate = new EmailTemplate(path.join(templatesDir, 'request-user-notification'));
         userNotifTemplate.render({ account : account }, function(err, results) {
             if (err) {
-                handleError(err, 'warn');
+                return handleError(err, 'warn');
             }
 
             transport.sendMail({
@@ -207,7 +208,7 @@ app.post('/requestAccount', function(req, res) {
         var adminRequestTemplate = new EmailTemplate(path.join(templatesDir, 'request-notification'));
         adminRequestTemplate.render({ account : account, host: req.protocol + '://' + req.get('host') }, function (err, results) {
             if (err) {
-                return next(err);
+                return handleError(err, 'warn');
             }
 
             transport.sendMail({
@@ -233,6 +234,57 @@ app.post('/login',
         }
     )
 );
+
+app.post('/send-deny-email', function(request, response) {
+    var requestTemplate = new EmailTemplate(path.join(templatesDir, 'request-approved'));
+    requestTemplate.render({}, function (err, results) {
+        if (err) {
+            response.send(500);
+            return handleError(err, 'warn');
+        }
+
+        transport.sendMail({
+            from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+            to: request.body.email,
+            subject: 'Account Request Approved!',
+            html: results.html
+        }, function (err, responseStatus) {
+            if (err) {
+                handleError(err, 'warn');
+                response.send(500);
+            } else {
+                response.send(200);
+            }
+            handleError(responseStatus.message, 'info');
+        });
+    });
+});
+
+app.post('/send-approve-email', function(request, response) {
+    var requestTemplate = new EmailTemplate(path.join(templatesDir, 'request-approved'));
+    requestTemplate.render({}, function (err, results) {
+        if (err) {
+            response.send(500);
+            return handleError(err, 'warn');
+        }
+
+        transport.sendMail({
+            from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+            to: request.body.email,
+            subject: 'Account Request Approved!',
+            html: results.html
+        }, function (err, responseStatus) {
+            if (err) {
+                handleError(err, 'warn');
+                response.send(500);
+            } else {
+                response.send(200);
+            }
+            handleError(responseStatus.message, 'info');
+        });
+    });
+
+});
 
 app.get('/logout', function(req, res) {
     req.logout();
