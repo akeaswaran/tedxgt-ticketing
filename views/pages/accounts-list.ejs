@@ -42,7 +42,7 @@
                     <%if (accounts.length > 1 || accounts.length == 0) { %>
                     <%= accounts.length %> Accounts
                     <% } else { %>
-                    <%= accounts.length %> Accounts
+                    <%= accounts.length %> Account
                     <% } %>
                 </h3>
             </div>
@@ -50,7 +50,7 @@
             <table class="table" id="accountsTable">
                 <thead>
                 <tr>
-                    <th>Created Date</th>
+                    <th>Created Date (GMT)</th>
                     <th>Name</th>
                     <th>Email</th>
                 </tr>
@@ -62,7 +62,15 @@
                         <td><%= moment(account._id.getTimestamp()).format('lll') %></td>
                         <td><%= account.name %></td>
                         <td><%= account.email %></td>
-                        <td><button role="button" class="admin-button btn btn-danger btn-xs">Make Admin</button> / <button role="button" class="delete-button btn btn-danger btn-xs">Delete</button></td>
+                        <td>
+                            <% if (account.isAdmin === true) { %>
+                            <button role="button" class="admin-button btn btn-danger btn-xs">Revoke Admin</button>
+                            <% } else { %>
+                            <button role="button" class="admin-button btn btn-danger btn-xs">Make Admin</button>
+                            <% } %>
+                            /
+                            <button role="button" class="delete-button btn btn-danger btn-xs">Delete</button>
+                        </td>
                     <% } else { %>
                         <td style="color:gray;"><%= moment(account._id.getTimestamp()).format('lll') %></td>
                         <td style="color:gray;"><%= account.name %></td>
@@ -92,7 +100,7 @@
         var rowIndex = $(this).parents("tr:first")[0].rowIndex - 1;
         var reqs = JSON.parse('<%- JSON.stringify(accounts) %>');
         var account = reqs[rowIndex];
-        account.isAdmin = true;
+        account.isAdmin = !account.isAdmin;
         account.approved = true;
         $('.approve-button').prop('disabled', true);
         $('.deny-button').prop('disabled', true);
