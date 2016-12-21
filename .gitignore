@@ -51,3 +51,7 @@ data
 
 # IntelliJ stupidity
 .idea
+
+# Misc
+.DS_Store
+/*.env

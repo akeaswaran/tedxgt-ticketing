@@ -7,7 +7,8 @@ var express = require('express'),
     moment = require('moment'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    winston = require('winston');
+    winston = require('winston'),
+    sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
 //app setup
 var app = express();
@@ -125,29 +126,33 @@ app.get('/accountRequests', function(request, response) {
     }
 })
 
-app.post('/register', function(req, res) {
-    Account.register(new Account({ username : req.body.username, name: req.body.name, email: req.body.email, approved: true, isAdmin: false }), req.body.password, function(err, account) {
-        if (err) {
-            return res.render('pages/error', { error : err.message });
-        }
-
-        passport.authenticate('local')(req, res, function () {
-            req.session.save(function (err) {
-                if (err) {
-                    handleError("ERROR IN LOCAL AUTH AFTER REGISTER: " + err, 'warn');
-                    res.send(500);
-                }
-                res.redirect('/adminPortal', { account : account });
-            });
-        });
-    });
-});
-
 app.post('/requestAccount', function(req, res) {
     Account.register(new Account({ username : req.body.username, name: req.body.name, email: req.body.email, approved: false, isAdmin: false }), req.body.password, function(err, account) {
         if (err) {
+            handleError(err, 'warn');
             return res.render('register', { error : err.message });
         }
+
+        //send notif email to both user and admins
+        /*var helper = require('sendgrid').mail;
+
+        var from_email = new helper.Email('test@example.com');
+        var to_email = new helper.Email('test@example.com');
+        var subject = 'Hello World from the SendGrid Node.js Library!';
+        var content = new helper.Content('text/plain', 'Hello, Email!');
+        var mail = new helper.Mail(from_email, subject, to_email, content);
+
+        var request = sendgrid.emptyRequest({
+            method: 'POST',
+            path: '/v3/mail/send',
+            body: mail.toJSON(),
+        });
+
+        sg.API(request, function(error, response) {
+            console.log(response.statusCode);
+            console.log(response.body);
+            console.log(response.headers);
+        });*/
 
         passport.authenticate('local')(req, res, function () {
             req.session.save(function (err) {
@@ -181,7 +186,7 @@ app.get('/ping', function(req, res){
 
 app.get('/', function (request, response) {
     Event.findAll(request, response, function(results) {
-        res.render('pages/index', {
+        response.render('pages/index', {
             events: results,
             moment: moment
         });
