@@ -102,7 +102,7 @@
                 $.ajax({
                     url: '/send-approve-email',
                     type: 'POST',
-                    data: account.email,
+                    data: { email: account.email },
                     success: function(data) {
                         if (data) {
                             console.log('deny success');
@@ -134,7 +134,7 @@
                 $.ajax({
                     url: '/send-deny-email',
                     type: 'POST',
-                    data: account.email,
+                    data: { email: account.email },
                     success: function(data) {
                         if (data) {
                             console.log('deny success');
