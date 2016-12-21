@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Account Requests | TEDxGeorgia Tech Event Management</title>
+    <title>Accounts | TEDxGeorgiaTech Event Management</title>
 
     <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -22,14 +22,14 @@
 <div class="row">
     <ol class="breadcrumb">
         <li><a href="/adminPortal">Home</a></li>
-        <li><a href="/accounts-list">Accounts</a></li>
-        <li class="active">Account Requests</li>
+        <li class="active">Accounts</li>
     </ol>
 </div>
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
-            Account Requests
+            Accounts
+            <a href="/accountRequests" class="btn btn-default pull-right">Account Requests</a>
         </h1>
     </div>
     <!-- /.col-lg-12 -->
@@ -39,15 +39,15 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <%if (requests.length > 1 || requests.length == 0) { %>
-                    <%= requests.length %> Open Requests
+                    <%if (accounts.length > 1 || accounts.length == 0) { %>
+                    <%= accounts.length %> Accounts
                     <% } else { %>
-                    <%= requests.length %> Open Request
+                    <%= accounts.length %> Accounts
                     <% } %>
                 </h3>
             </div>
             <% if (requests.length > 0) { %>
-            <table class="table" id="requestsTable">
+            <table class="table" id="accountsTable">
                 <thead>
                 <tr>
                     <th>Created Date</th>
@@ -56,20 +56,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% requests.forEach(function(account) { %>
+                <% accounts.forEach(function(account) { %>
                 <tr>
-
-                    <td><%= moment(account._id.getTimestamp()).format('lll') %></td>
-                    <td><%= account.name %></td>
-                    <td><%= account.email %></td>
-                    <td><button role="button" class="approve-button btn btn-danger btn-xs">Approve</button> / <button role="button" class="deny-button btn btn-danger btn-xs">Deny</button></td>
+                    <% if (account.approved === true) {%>
+                        <td><%= moment(account._id.getTimestamp()).format('lll') %></td>
+                        <td><%= account.name %></td>
+                        <td><%= account.email %></td>
+                        <td><button role="button" class="admin-button btn btn-danger btn-xs">Make Admin</button> / <button role="button" class="delete-button btn btn-danger btn-xs">Delete</button></td>
+                    <% } else { %>
+                        <td style="color:gray;"><%= moment(account._id.getTimestamp()).format('lll') %></td>
+                        <td style="color:gray;"><%= account.name %></td>
+                        <td style="color:gray;"><%= account.email %></td>
+                        <td><button role="button" class="admin-button btn btn-danger btn-xs">Approve</button> / <button role="button" class="delete-button btn btn-danger btn-xs">Deny</button></td>
+                    <% } %>
                 </tr>
                 <%});%>
                 </tbody>
             </table>
             <% } else { %>
             <div class="panel-body">
-                <p>No requests open.</p>
+                <p>No accounts available.</p>
             </div>
             <% }%>
         </div>
@@ -81,11 +87,12 @@
 <script src="/js/moment.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script>
-    $('.approve-button').on('click', function (event) {
-       event.preventDefault();
+    $('.admin-button').on('click', function (event) {
+        event.preventDefault();
         var rowIndex = $(this).parents("tr:first")[0].rowIndex - 1;
         var reqs = JSON.parse('<%- JSON.stringify(requests) %>');
         var account = reqs[rowIndex];
+        account.isAdmin = true;
         account.approved = true;
         $('.approve-button').prop('disabled', true);
         $('.deny-button').prop('disabled', true);
@@ -104,7 +111,7 @@
         });
     });
 
-    $('.deny-button').on('click', function (event) {
+    $('.delete-button').on('click', function (event) {
         event.preventDefault();
         var rowIndex = $(this).parents("tr:first")[0].rowIndex - 1;
         var reqs = JSON.parse('<%- JSON.stringify(requests) %>');

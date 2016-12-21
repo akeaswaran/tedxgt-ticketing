@@ -99,6 +99,30 @@ app.get('/admin', function (request, response) {
     }
 });
 
+app.get('/accounts-list', function (request, response) {
+    if (request.isAuthenticated()) {
+        mongoose.model('Account').find()
+            .where('_id', { $ne: request.user._id } )
+            .sort('name')
+            .then(
+                function(docs) {
+                    response.render('pages/accounts-list', {
+                        accounts: docs,
+                        moment: moment
+                    });
+                },
+                function(error) {
+                    if (error) {
+                        handleError(err, 'warn');
+                        response.send(500);
+                    }
+                }
+            );
+    } else {
+        response.redirect('/admin');
+    }
+});
+
 app.get('/adminPortal', function (request, response) {
     if (request.isAuthenticated()) {
         Event.findAll(request, response, function(results) {
@@ -139,27 +163,6 @@ app.get('/accountRequests', function(request, response) {
         response.redirect('/admin');
     }
 });
-
-/*
-app.post('/adminRegister', function(req, res) {
-    Account.register(new Account({ username : req.body.username, name: req.body.name, email: req.body.email, approved: true, isAdmin: true }), req.body.password, function(err, account) {
-        if (err) {
-            handleError(err, 'warn');
-            res.send(500);
-            //return res.render('register', { error : err.message });
-        }
-
-        passport.authenticate('local')(req, res, function () {
-            req.session.save(function (err) {
-                if (err) {
-                    handleError("ERROR IN LOCAL AUTH AFTER REQUESTACCOUNT: " + err, 'warn');
-                    res.send(500);
-                }
-                res.send(200);
-            });
-        });
-    });
-});*/
 
 app.post('/requestAccount', function(req, res) {
     Account.register(new Account({ username : req.body.username, name: req.body.name, email: req.body.email, approved: false, isAdmin: false }), req.body.password, function(err, account) {
