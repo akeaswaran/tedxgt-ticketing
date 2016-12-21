@@ -216,9 +216,9 @@ app.post('/requestAccount', function(req, res) {
                 html: results.html
             }, function (err, responseStatus) {
                 if (err) {
-                    return next(err);
+                    handleError(err, 'warn');
                 }
-                next(null, responseStatus.message);
+                handleError(responseStatus.message, 'info');
             });
         });
     });
