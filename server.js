@@ -8,7 +8,11 @@ var express = require('express'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     winston = require('winston'),
-    sendgrid = require('sendgrid')(process.env.SENDGRID_API_KEY);
+    nodemailer = require('nodemailer'),
+    wellknown = require('nodemailer-wellknown'),
+    EmailTemplate = require('email-templates').EmailTemplate,
+    async = require('async'),
+    path = require('path');
 
 //app setup
 var app = express();
@@ -60,6 +64,17 @@ require('./models/attendee');
 require('./models/ticket');
 require('./routes')(app);
 
+var templatesDir = path.resolve(__dirname, '..', 'templates');
+
+// Prepare nodemailer transport object
+var transport = nodemailer.createTransport({
+    service: 'sendgrid',
+    auth: {
+        user: process.env.SENDGRID_USERNAME,
+        pass: process.env.SENDGRID_PASSWORD
+    }
+});
+
 var Event = require('./controllers/events');
 
 
@@ -105,7 +120,7 @@ app.get('/accountRequests', function(request, response) {
             .where('isAdmin', false)
             .where('approved', false)
             .where('_id', { $ne: request.user._id } )
-            .sort('-name')
+            .sort('name')
             .then(
                 function(docs) {
                     response.render('pages/accountRequests', {
@@ -132,27 +147,6 @@ app.post('/requestAccount', function(req, res) {
             return res.render('register', { error : err.message });
         }
 
-        //send notif email to both user and admins
-        /*var helper = require('sendgrid').mail;
-
-        var from_email = new helper.Email('test@example.com');
-        var to_email = new helper.Email('test@example.com');
-        var subject = 'Hello World from the SendGrid Node.js Library!';
-        var content = new helper.Content('text/plain', 'Hello, Email!');
-        var mail = new helper.Mail(from_email, subject, to_email, content);
-
-        var request = sendgrid.emptyRequest({
-            method: 'POST',
-            path: '/v3/mail/send',
-            body: mail.toJSON(),
-        });
-
-        sg.API(request, function(error, response) {
-            console.log(response.statusCode);
-            console.log(response.body);
-            console.log(response.headers);
-        });*/
-
         passport.authenticate('local')(req, res, function () {
             req.session.save(function (err) {
                 if (err) {
@@ -162,6 +156,66 @@ app.post('/requestAccount', function(req, res) {
                 res.redirect('/admin', { account : account });
             });
         });
+
+        //send notif email to both user and admins
+        var userNotifTemplate = new EmailTemplate(path.join(templatesDir, 'request-user-notification'));
+        userNotifTemplate.render({ account : account, host: req.protocol + '://' + req.get('host') }, function(err, results) {
+            if (err) {
+                handleError(err, 'warn');
+            }
+
+            transport.sendMail({
+                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+                to: account.email,
+                subject: 'Account Request for ' + account.name + ' Successful!',
+                html: results.html
+            }, function (err, responseStatus) {
+                if (err) {
+                    handleError(err, 'warn');
+                }
+                handleError(responseStatus.message, 'info');
+            })
+        });
+
+        var adminRequestTemplate = new EmailTemplate(path.join(templatesDir, 'request-notification'));
+        mongoose.model('Account').find()
+            .where('isAdmin', true)
+            .where('approved', true)
+            .sort('name')
+            .then(
+                function(docs) {
+                    async.mapLimit(docs, docs.length, function (acc, next) {
+                        adminRequestTemplate.render(acc, function (err, results) {
+                            if (err) {
+                                return next(err);
+                            }
+
+                            transport.sendMail({
+                                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+                                to: acc.email,
+                                subject: 'New account request from ' + account.name,
+                                html: results.html
+                            }, function (err, responseStatus) {
+                                if (err) {
+                                    return next(err);
+                                }
+                                next(null, responseStatus.message);
+                            });
+                        });
+                    }, function (err) {
+                        if (err) {
+                            handleError(err, 'warn')
+                        }
+
+                        handleError('Succesfully sent ' + users.length + ' messages', 'info');
+                    });
+                },
+                function(error) {
+                    if (error) {
+                        handleError(err, 'warn');
+                    }
+                }
+            );
     });
 });
 
