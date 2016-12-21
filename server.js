@@ -28,11 +28,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const tsFormat = (new Date()).toLocaleTimeString();
-const logger = new (winston.Logger)({
+var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
-            timestamp: tsFormat,
+            timestamp: (new Date()).toLocaleTimeString(),
             colorize: true
         })
     ]
