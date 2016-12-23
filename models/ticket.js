@@ -18,10 +18,30 @@ var TicketSchema = new Schema({
 
 TicketSchema.post('save', function(next) {
     // Update ticket category with new ticket
-    mongoose.model('TicketCategory').update(
-        { _id: this.ticketCategory },
-        { $push: { tickets : { _id : this._id } }, $inc : { numTicketsSold: 1 } },
-        next
+    var ticket = this;
+    mongoose.model('TicketCategory').findByIdAndUpdate(
+        ticket.ticketCategory,
+        { $push: { tickets: ticket._id }, $inc: { numTicketsSold: 1 } },
+        { new : true},
+        function(err, model) {
+            if (err) {
+                console.log("TICKETCATEGORY UPDATE ERR: " + err);
+            }
+
+            console.log("UPDATED TC: " + model);
+
+            mongoose.model('Event').findByIdAndUpdate(
+                model.event,
+                { $push: { attendees: ticket.attendee } },
+                { new : true }, function(err, doc) {
+                    if (err) {
+                        console.log("EVENT UPDATE ERR: " + err);
+                    }
+
+                    console.log("UPDATED EVENT: " + doc);
+                    return next;
+                });
+        }
     );
 });
 
