@@ -2,10 +2,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var AttendeeSchema = new Schema({
-    firstName: String,
-    lastName: String,
-    email: String,
-    miscData: Array
+    name: String,
+    email: String
 });
 
 mongoose.model('Attendee', AttendeeSchema);

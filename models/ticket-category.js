@@ -23,7 +23,7 @@ TicketCategorySchema.pre('remove', function(next) {
 
     mongoose.model('Event').update(
         { ticketCategories: { $in: [this._id] }},
-        { $pull: { ticketCategories : { _id : this_id } } },
+        { $pull: { ticketCategories : { _id : this._id } } },
         { multi: true },
         next
     );

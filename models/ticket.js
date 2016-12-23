@@ -13,8 +13,16 @@ var TicketSchema = new Schema({
     ticketCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TicketCategory'
-    },
-    price: Number
+    }
+});
+
+TicketSchema.post('save', function(next) {
+    // Update ticket category with new ticket
+    mongoose.model('TicketCategory').update(
+        { _id: this.ticketCategory },
+        { $push: { tickets : { _id : this._id } }, $inc : { numTicketsSold: 1 } },
+        next
+    );
 });
 
 mongoose.model('Ticket', TicketSchema);

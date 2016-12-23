@@ -14,7 +14,8 @@ var express = require('express'),
     wellknown = require('nodemailer-wellknown'),
     EmailTemplate = require('email-templates').EmailTemplate,
     async = require('async'),
-    path = require('path');
+    path = require('path'),
+    stripe = require('stripe')(process.env.STRIPE_API_SECRET_KEY);
 
 //app setup
 var app = express();
@@ -79,7 +80,8 @@ var transport = nodemailer.createTransport({
 });
 
 var Event = require('./controllers/events');
-
+var Attendee = mongoose.model('Attendee');
+var Ticket = mongoose.model('Ticket');
 
 //DB Setup
 var mongoUri = process.env.MONGODB_URI || 'mongodb://localhost/ticketing-ake';
@@ -321,7 +323,7 @@ app.get('/', function (request, response) {
 });
 
 app.get('/event/:id', function(req, res) {
-    return Event.findById(req, res, function(error, result) {
+    Event.findById(req, res, function(error, result) {
         if (error) {
             handleError("EVENT GET REQUEST - Could not find event with id " + req.params.id, 'warn');
             res.redirect('/');
@@ -338,13 +340,99 @@ app.get('/event/:id', function(req, res) {
                     startDate : moment(result.startDate).format('LT'),
                     startDay : moment(result.endDate).format('LL')
                 },
+                stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY,
                 curDate: moment().format('llll')
             });
         }
     });
 });
 
-//post listening
+/* HANDLING PAYMENTS */
+app.post('/charge', function(req, res) {
+    var stripeToken = req.body.token;
+    var tcData = req.body.tcData;
+    var attendeeData = req.body.attData;
+    console.log('TCDATA: ' + JSON.stringify(tcData, null, '\t'));
+
+    mongoose.model('Event').findOne({ _id: tcData.event }, function(err, event) {
+        if (err) {
+            console.log("EVENT FIND: " + err);
+            return res.send(500, { error: err });
+        }
+        console.log('TOKEN: ' + JSON.stringify(stripeToken, null, '\t'));
+
+        stripe.charges.create({
+                source: stripeToken.id,
+                currency: 'usd',
+                amount: (tcData.price * 100), //converting to cents
+                description: "Ticket for " + tcData.name  + " section in event " + event.name,
+                receipt_email: attendeeData.email,
+                statement_descriptor: 'TEDxGT Event Ticket'
+            },
+            function(err, charge) {
+                if (err) {
+                    console.log("CHARGE CREATE: " + err);
+                    res.send(500, err);
+                } else {
+                    handleChargeResult(res, attendeeData, tcData);
+                }
+            }
+        );
+    });
+});
+
+function handleChargeResult(res, attendeeData, tcData) {
+    //create attendee
+    Attendee.create(attendeeData, function (err, attendee) {
+        if (err) {
+            console.log("ATTENDEE CREATE: " + err);
+            return res.send(500);
+        }
+
+        //create ticket --> attach attendee, event, and TC to ticket
+        Ticket.create(
+            {
+                event: tcData.event,
+                ticketCategory: tcData._id,
+                attendee: attendee._id
+            }, function(err, ticket) {
+                if (err) {
+                    console.log(err);
+                    res.send({
+                        ticket: null,
+                        status: 'bad',
+                        message: err
+                    });
+                }
+
+                res.send({
+                    ticket: ticket,
+                    status: 'ok',
+                    message: 'success'
+                });
+            });
+    });
+}
+
+app.get('/confirmation/:tId', function(req, res) {
+   var ticketId = req.params.tId;
+   Ticket.find({ _id: ticketId})
+         .populate('attendee')
+         .populate('ticketCategory')
+         .populate('event')
+         .limit(1)
+         .then(function(results) {
+             //console.log("CONF TICKET RES: " + JSON.stringify(results, null, '\t'));
+             res.render('pages/confirmation', {
+                 ticket: results[0],
+                 moment: moment
+             });
+         }, function(err) {
+             res.send(err);
+         });
+});
+
+//port listening
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });

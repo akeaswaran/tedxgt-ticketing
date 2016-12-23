@@ -16,8 +16,6 @@ var EventSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TicketCategory'
     }],
-    totalTickets: Number,
-    miscData: Array,
     closed: Boolean
 });
 

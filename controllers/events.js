@@ -14,10 +14,15 @@ exports.findAll = function(req, res, callback){
 
 exports.findById = function(req, res, callback) {
     var id = req.params.id;
-    Event.findOne({'_id' : id}, function(error, result) {
-        if (error) return console.log(error);
-        callback(error, result);
-    })
+    Event.find({_id : id})
+        .populate('attendees')
+        .populate('ticketCategories')
+        .limit(1)
+        .then(function(results) {
+            callback(null, results[0]);
+        }, function(err) {
+            callback(err, {});
+        });
 };
 
 exports.add = function(req, res) {

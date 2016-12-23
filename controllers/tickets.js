@@ -3,8 +3,6 @@ var mongoose = require('mongoose'),
 
 exports.findAll = function(req, res, callback){
     Ticket.find({})
-        //.populate('attendee')
-        //.populate('ticketCategory')
         .then(function(results) {
             callback(null, results);
         }, function(err) {
@@ -14,10 +12,15 @@ exports.findAll = function(req, res, callback){
 
 exports.findById = function(req, res) {
     var id = req.params.id;
-    Ticket.findOne({'_id' : id}, function(error, result) {
-        if (error) return console.log(error);
-        return res.send(result);
-    })
+    Ticket.find({ _id: id})
+        .populate('attendee')
+        .populate('ticketCategory')
+        .populate('event')
+        .then(function(results) {
+            res.send(results);
+        }, function(err) {
+            res.send(err);
+        });
 };
 
 exports.add = function(req, res) {
