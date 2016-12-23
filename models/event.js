@@ -25,4 +25,12 @@ EventSchema.pre('remove', function(next) {
     mongoose.model('Ticket').remove({ event: this._id }, next);
 });
 
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+EventSchema.plugin(deepPopulate, {
+    whitelist: [
+        'ticketCategories.tickets',
+        'ticketCategories.tickets.attendee'
+    ]
+});
+
 mongoose.model('Event', EventSchema);

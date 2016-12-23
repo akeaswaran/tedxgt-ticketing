@@ -132,6 +132,57 @@ app.get('/accounts-list', function (request, response) {
     }
 });
 
+app.get('/attendees-list', function (request, response) {
+    if (isAuthed(request)) {
+        mongoose.model('Event').find()
+            .populate('attendees')
+            .populate('ticketCategories')
+            .sort('name')
+            .then(
+                function(docs) {
+                    response.render('pages/attendees-list', {
+                        events: docs,
+                        moment: moment
+                    });
+                },
+                function(error) {
+                    if (error) {
+                        handleError(err, 'warn');
+                        response.send(500);
+                    }
+                }
+            );
+    } else {
+        response.redirect('/admin');
+    }
+});
+
+app.get('/admin/event/:id/attendees', function(req, res) {
+    if (isAuthed(req)) {
+        mongoose.model('Event').find()
+            .where('_id', req.params.id)
+            .populate('ticketCategories')
+            .deepPopulate('ticketCategories.tickets ticketCategories.tickets.attendee')
+            .sort('name')
+            .then(
+                function(docs) {
+                    res.render('pages/attendees', {
+                        event: docs[0],
+                        moment: moment
+                    });
+                },
+                function(error) {
+                    if (error) {
+                        handleError(err, 'warn');
+                        res.send(500);
+                    }
+                }
+            );
+    } else {
+        res.redirect('/admin');
+    }
+});
+
 app.get('/adminPortal', function (request, response) {
     if (isAuthed(request)) {
         Event.findAll(request, response, function(err, results) {

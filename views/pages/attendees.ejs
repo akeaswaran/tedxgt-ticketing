@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Attendees | <%= event.name %> | TEDxGeorgiaTech Event Management</title>
+
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body class="container" style="background: white;padding-top: 20px;">
+<div class="row">
+    <ol class="col-lg-12 breadcrumb">
+        <li><a href="/adminPortal">Home</a></li>
+        <li><%= event.name %></li>
+        <li class="active">Attendees</li>
+    </ol>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Attendees
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<% event.ticketCategories.forEach(function(tickCat) { %>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <%= tickCat.name %> (<%= tickCat.tickets.length %>)
+                </h3>
+            </div>
+            <% if (tickCat.tickets.length > 0) { %>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% tickCat.tickets.forEach(function(ticket) { %>
+                <tr>
+                    <td><%= ticket.attendee.name %></td>
+                    <td><%= ticket.attendee.email %></td>
+                    <td><button type="button" class="btn btn-xs btn-default pull-right" onclick=""><i class="fa fa-pencil" aria-hidden="true"></i></button></td>
+                </tr>
+                <%});%>
+                </tbody>
+            </table>
+            <% } else { %>
+            <div class="panel-body">
+                <p>No attendees available.</p>
+            </div>
+            <% }%>
+        </div>
+    </div>
+</div>
+<% }); %>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/moment.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>
