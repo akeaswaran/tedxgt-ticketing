@@ -33,6 +33,7 @@
     </div>
     <!-- /.col-lg-12 -->
 </div>
+<% if (events.length > 0) { %>
 <% events.forEach(function(event) { %>
 <div class="row">
     <div class="col-lg-12">
@@ -69,6 +70,13 @@
     </div>
 </div>
 <% }); %>
+<% } else { %>
+<div class="row">
+    <div class="col-lg-12">
+        <p>No attendees available.</p>
+    </div>
+</div>
+<% } %>
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/main.js"></script>
