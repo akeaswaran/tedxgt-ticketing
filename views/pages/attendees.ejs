@@ -31,45 +31,32 @@
         <h1 class="page-header">
             Attendees
         </h1>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-<% event.ticketCategories.forEach(function(tickCat) { %>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <%= tickCat.name %> (<%= tickCat.tickets.length %>)
-                </h3>
-            </div>
-            <% if (tickCat.tickets.length > 0) { %>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% tickCat.tickets.forEach(function(ticket) { %>
-                <tr>
-                    <td><%= ticket.attendee.name %></td>
-                    <td><%= ticket.attendee.email %></td>
-                    <td><button type="button" class="btn btn-xs btn-default pull-right" onclick=""><i class="fa fa-pencil" aria-hidden="true"></i></button></td>
-                </tr>
-                <%});%>
-                </tbody>
-            </table>
-            <% } else { %>
-            <div class="panel-body">
-                <p>No attendees available.</p>
-            </div>
-            <% }%>
+        <% if (event.attendees.length > 0) { %>
+        <table class="table" id="attendeesTable">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% event.attendees.forEach(function(attendee) { %>
+            <tr>
+                <td><%= attendee.name %></td>
+                <td><%= attendee.email %></td>
+                <td><button type="button" class="btn btn-xs btn-default pull-right" onclick=""><i class="fa fa-pencil" aria-hidden="true"></i></button></td>
+            </tr>
+            <%});%>
+            </tbody>
+        </table>
+        <% } else { %>
+        <div class="panel-body">
+            <p>No attendees available.</p>
         </div>
+        <% }%>
     </div>
 </div>
-<% }); %>
+
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/main.js"></script>
