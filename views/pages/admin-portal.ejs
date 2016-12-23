@@ -31,7 +31,7 @@
 
 </head>
 
-<% if (account.approved === false || account.approved === null) {%>
+<% if ((account !== null && (account.approved === false || account.approved === null))) {%>
 <body class="container" style="background: white">
 <div class="row" style="padding-top: 20px;">
     <div class="col-lg-8 col-lg-offset-2">
@@ -49,26 +49,27 @@
                 <h4 class="modal-title" id="new-event-modal-label">New Event</h4>
             </div>
             <div class="modal-body">
-                <form>
+                <h4>Event Details</h4>
+                <form role="form" data-toggle="validator">
                     <div class="form-group">
                         <label for="event-name" class="control-label">Name</label>
-                        <input class="form-control" id="event-name">
+                        <input class="form-control" id="event-name" required>
                     </div>
                     <div class="form-group">
                         <label for="event-description" class="control-label">Description</label>
-                        <textarea class="form-control" id="event-description"></textarea>
+                        <textarea class="form-control" id="event-description" required></textarea>
                     </div>
                     <div class="form-group">
                         <label for="event-location" class="control-label">Location</label>
-                        <input class="form-control" id="event-location">
+                        <input class="form-control" id="event-location" required>
                     </div>
                     <div class="form-group">
                         <label for="event-url" class="control-label">URL</label>
-                        <input type="text" class="form-control" id="event-url">
+                        <input type="text" class="form-control" id="event-url" required>
                     </div>
                     <div class="form-group">
                         <label for="event-start-date" class="control-label">Start Date</label>
-                        <div class='input-group date' id='event-start-date'>
+                        <div class='input-group date' id='event-start-date' required>
                             <input type='text' class="form-control" />
                             <span class="input-group-addon">
                                         <span class="fa fa-calendar"></span>
@@ -77,17 +78,93 @@
                     </div>
                     <div class="form-group">
                         <label for="event-start-date" class="control-label">End Date</label>
-                        <div class='input-group date' id='event-end-date'>
+                        <div class='input-group date' id='event-end-date' required>
                             <input type='text' class="form-control" />
                             <span class="input-group-addon">
                                 <span class="fa fa-calendar"></span>
                             </span>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <h4>
+                            Ticket Categories
+                            <button id="add-tc-button" class="btn btn-xs btn-default"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </h4>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="save-event" type="button" class="btn btn-danger" data-dismiss="modal">Save</button>
+                <button id="save-event" type="button" class="btn btn-default" data-loading="Creating Event...">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit-event-modal" tabindex="-1" role="dialog" aria-labelledby="edit-event-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="edit-event-modal-label">Edit Event</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Event Details</h4>
+                <form role="form" data-toggle="validator">
+                    <div class="form-group">
+                        <label for="edit-event-name" class="control-label">Name</label>
+                        <input class="form-control" id="edit-event-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-event-description" class="control-label">Description</label>
+                        <textarea class="form-control" id="edit-event-description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-event-location" class="control-label">Location</label>
+                        <input class="form-control" id="edit-event-location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-event-url" class="control-label">URL</label>
+                        <input type="text" class="form-control" id="edit-event-url" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-event-start-date" class="control-label">Start Date</label>
+                        <div class='input-group date' id='edit-event-start-date' required>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-event-start-date" class="control-label">End Date</label>
+                        <div class='input-group date' id='edit-event-end-date' required>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label class="control-label">
+                                <input type="checkbox" id="edit-close-event-box"> Registration Closed?
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <h4>
+                            Ticket Categories
+                            <button id="edit-add-tc-button" class="btn btn-xs btn-default"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </h4>
+                        <div class="panel-group" id="edit-accordion" role="tablist" aria-multiselectable="true">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-delete-event" type="button" class="btn btn-danger" data-loading="Deleting Event...">Delete</button>
+                <button id="edit-save-event" type="button" class="btn btn-default" data-loading="Saving Changes...">Save</button>
             </div>
         </div>
     </div>
@@ -99,12 +176,12 @@
             <% if (account.isAdmin === true) {%>
             <div class="btn-group pull-right" role="group" aria-label="options">
                 <a href="/accounts-list" class="btn btn-default">Account List</a>
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#new-event-modal">
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#new-event-modal">
                     Add Event
                 </button>
             </div>
             <% } else { %>
-            <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#new-event-modal">
+            <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#new-event-modal">
                 Add Event
             </button>
             <% } %>
@@ -119,14 +196,25 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-3">
-                        <i class="fa fa-calendar fa-5x"></i>
+                        <i class="fa fa-ticket fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge"><%= events.length %></div>
-                        <% if (events.length > 1 || events.length == 0) { %>
-                        <div>Events</div>
+                        <% var sumTicketsSold = 0;%>
+                        <% events.forEach(function(event) { %>
+                            <% event.ticketCategories.forEach(function (ticketCategory) { %>
+                                <% if (ticketCategory !== null) { %>
+                                    <% sumTicketsSold += ticketCategory.numTicketsSold; %>
+                                <% } %>
+                            <% }); %>
+                        <% }); %>
+                        <% if (isNaN(sumTicketsSold)) {%>
+                            <% sumTicketsSold = 0;%>
+                        <% } %>
+                        <div class="huge"><%= sumTicketsSold %></div>
+                        <% if (sumTicketsSold > 1 || sumTicketsSold == 0) { %>
+                            <div>Tickets</div>
                         <% } else { %>
-                        <div>Event</div>
+                            <div>Ticket</div>
                         <% } %>
                     </div>
                 </div>
@@ -180,10 +268,15 @@
                     <div class="col-xs-9 text-right">
                         <% var sumRevenue = 0;%>
                         <% events.forEach(function(event) { %>
-                        <% event.ticketCategories.forEach(function (ticketCategory) { %>
-                        <% sumRevenue += (ticketCategory.price * ticketCategory.numTicketsSold); %>
+                            <% event.ticketCategories.forEach(function (ticketCategory) { %>
+                                <% if (ticketCategory !== null) { %>
+                                    <% sumRevenue += (ticketCategory.price * ticketCategory.numTicketsSold); %>
+                                <% } %>
+                            <% }); %>
                         <% }); %>
-                        <%});%>
+                        <% if (isNaN(sumRevenue)) {%>
+                            <% sumRevenue = 0;%>
+                        <% } %>
                         <div class="huge">$<%= sumRevenue %></div>
                         <div>Revenue</div>
                     </div>
@@ -217,25 +310,27 @@
                 <tbody>
                 <% events.forEach(function(event) { %>
                 <tr>
-                    <td><a href="/admin/event/<%= event._id %>/settings"><%= event.name %></a></td>
+                    <td><a href="/event/<%= event._id %>"><%= event.name %></a> <button type="button" class="btn btn-xs btn-default" onclick="showEditEventModal(<%= JSON.stringify(event) %>)"><i class="fa fa-cog" aria-hidden="true"></i></button></td>
                     <td><%= moment(event.startDate).format('LL') %></td>
                     <% var sumTickets = 0;%>
                     <% event.ticketCategories.forEach(function(ticketCategory) { %>
-                    <% sumTickets += ticketCategory.numTickets; %>
+                        <% if (ticketCategory !== null) { %>
+                            <% sumTickets += ticketCategory.numTickets; %>
+                        <% } %>
                     <%});%>
                     <td>
                         <% if (event.attendees.length > 0) { %>
-                        <% if (sumTicketsSold > 0) { %>
-                        <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
+                            <% if (sumTicketsSold > 0) { %>
+                                <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
+                            <% } else { %>
+                                <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
+                            <% } %>
                         <% } else { %>
-                        <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
-                        <% } %>
-                        <% } else { %>
-                        <% if (sumTickets > 0) { %>
-                        <%= event.attendees.length %> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
-                        <% } else { %>
-                        <%= event.attendees.length %> / <%= sumTickets %>
-                        <% } %>
+                            <% if (sumTickets > 0) { %>
+                                <%= event.attendees.length %> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
+                            <% } else { %>
+                                <%= event.attendees.length %> / <%= sumTickets %>
+                            <% } %>
                         <% }%>
                     </td>
                 </tr>
@@ -251,10 +346,11 @@
     </div>
 </div>
 
-<script src="/js/jquery.min.js"></script>
-<script src="/js/moment.js"></script>
-<script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/moment.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.8/validator.min.js"></script>
 
 <script>
     $(function () {
@@ -262,44 +358,359 @@
             minDate: moment()
         });
         $('#event-end-date').datetimepicker({
+            minDate: moment(),
+            useCurrent: false
+        });
+
+        $("#event-start-date").on("dp.change", function (e) {
+            $('#event-end-date').data("DateTimePicker").minDate(e.date);
+        });
+
+        $('#edit-event-start-date').datetimepicker({
             minDate: moment()
+        });
+        $('#edit-event-end-date').datetimepicker({
+            minDate: moment(),
+            useCurrent: false
+        });
+
+        $("#edit-event-start-date").on("dp.change", function (e) {
+            $('#edit-event-end-date').data("DateTimePicker").minDate(e.date);
         });
     });
 
     $('#save-event').click(function(event) {
         event.preventDefault();
-        if ($('#event-name').val() !== null
+        var $btn = $(this);
+        $btn.button('loading');
+        var validTC = true;
+        if ($('#accordion').children('.panel').length > 0) {
+            for (var j = 1; j <= $('#accordion').children('.panel').length; j++) {
+                if ($('#tc-name-' + j).val() === null
+                    || $('#tc-description-' + j).val() === null
+                    || $('#tc-price-' + j).val() === null
+                    || $('#tc-numtickets-' + j).val() === null) {
+                    validTC = false;
+                    break;
+                }
+            }
+        } else {
+            validTC = false;
+        }
+
+        if (validTC
+            && $('#event-name').val() !== null
             && $('#event-description').val() !== null
             && $('#event-location').val() !== null
             && $('#event-url').val() !== null
             && $('#event-start-date').data("DateTimePicker").date() !== null
             && $('#event-end-date').data("DateTimePicker").date() !== null
+            && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
         ) {
             var eventName = $('#event-name').val();
             var eventDescription = $('#event-description').val();
             var eventLocation = $('#event-location').val();
             var eventUrl = $('#event-url').val();
-            var startDate = $('#event-start-date').data("DateTimePicker").date().toDate();
-            var endDate = $('#event-end-date').data("DateTimePicker").date().toDate();
-
+            var startDate = $('#event-start-date').data("DateTimePicker").date();
+            var endDate = $('#event-end-date').data("DateTimePicker").date();
 
             var postData = {
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
                 "url" : eventUrl,
-                "start-date" : startDate,
-                "end-date" : endDate
+                "startDate" : startDate.toDate(),
+                "endDate" : endDate.toDate()
             }
-            console.log(postData);
+            console.log('POSTDATA: ' + JSON.stringify(postData, null, '\t'));
+
+            var tcData = [];
+            for (var i = 1; i <= $('#accordion').children('.panel').length; i++) {
+                tcData.push({
+                    name: $('#tc-name-' + i).val(),
+                    description: $('#tc-description-' + i).val(),
+                    price: $('#tc-price-' + i).val(),
+                    numTickets: $('#tc-numtickets-' + i).val(),
+                    numTicketsSold: 0,
+                    tickets: []
+                });
+            }
 
             $.post("/events", postData, function(data) {
-                console.log('post result ' + data);
+                if (data && data.hasOwnProperty('_id')) {
+                    console.log('post result ' + JSON.stringify(data));
+                    tcData.forEach(function(tc) {
+                       tc.event = data._id;
+                    });
+                    var postDict = {
+                        tcArr: tcData,
+                        eventId: data._id
+                    }
+
+                    $.post("/ticket-categories", postDict, function(tcs) {
+                        if (tcs) {
+                            console.log('TCS: ' + JSON.stringify(tcs));
+                            console.log('update event tcs success');
+                        }
+
+                        $('#new-event-modal').hide();
+                        $btn.button('reset');
+                        location.reload();
+                    });
+                }
             });
         } else {
+            $btn.button('reset');
             console.log('invalid data');
         }
     });
+
+    $('#add-tc-button').on('click', function(event) {
+        event.preventDefault();
+        var index = $('#accordion').children('.panel').length + 1;
+        var html = "<div class=\"panel panel-default\">";
+        html += "<div class=\"panel-heading\" role=\"tab\" id=\"heading" + index + "\">";
+        html += "<h4 class=\"panel-title\">";
+        html += "<a class=\"collapsed\" role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + index + "\" aria-expanded=\"false\" aria-controls=\"collapse" + index + "\">Ticket Category " + index + "</a>";
+        html += "</h4>";
+        html += "</div>";
+        html += "<div id=\"collapse" + index + "\" class=\"panel-collapse collapse\" role=\"tabpanel\" aria-labelledby=\"heading" + index + "\">";
+        html += "<div class=\"panel-body\">";
+        html += "<form data-toggle=\"validator\" role=\"form\">"
+        html += "<label for=\"tc-name-" + index + "\">Name</label><input type=\"text\" class=\"form-control\" id=\"tc-name-" + index + "\" placeholder=\"e.g. 'General Admission' \" required>";
+        html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required></textarea>"
+        html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" required></div>";
+        html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" required>";
+        html += "</form>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        if (index > 4) {
+            $(this).attr('disabled', 'disabled');
+        }
+        $('#accordion').append(html);
+    });
+
+    $('#new-event-modal').on('hidden.bs.modal', function () {
+        $('#accordion').empty();
+    });
+
+    function showEditEventModal(eventString) {
+        var event = eventString;
+        $('#edit-event-name').val(event.name);
+        $('#edit-event-description').val(event.description);
+        $('#edit-event-location').val(event.location);
+        $('#edit-event-url').val(event.url);
+        $('#edit-close-event-box').val(event.closed);
+        $('#edit-event-start-date').data("DateTimePicker").defaultDate(moment(event.startDate));
+        $('#edit-event-end-date').data("DateTimePicker").defaultDate(moment(event.endDate));
+
+        event.ticketCategories.forEach(function(tc) {
+            var index = $('#edit-accordion').children('.panel').length + 1;
+            var html = createTCPanelStub(index, tc);
+            if (index > 4) {
+                $('#edit-add-tc-button').attr('disabled', 'disabled');
+            }
+            $('#edit-accordion').append(html);
+        })
+
+        $('#edit-save-event').data('event-id', event._id);
+
+        $('#edit-delete-event').on('click', function(e) {
+           e.preventDefault();
+           deleteEvent(eventString);
+        });
+        $('#edit-event-modal').modal('show');
+    }
+
+    function deleteEvent(eventString) {
+        var event = eventString;
+        var result = confirm('Are you sure you want to delete this event? This action is permanent.');
+        if (result === true) {
+            $.ajax({
+                url: '/events/' + event._id,
+                method: 'DELETE',
+                success: function(data) {
+                    if (data) {
+                        console.log('some delete return data ' + data);
+                    }
+
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    function deleteTC(tcDict) {
+        var result = confirm('Are you sure you want to delete this ticket category? This action is permanent.');
+        if (result === true) {
+            if (tcDict.tcId !== null) {
+                $.ajax({
+                    url: '/ticket-categories/' + tcDict.tcId,
+                    method: 'DELETE',
+                    success: function(data) {
+                        if (data) {
+                            console.log('some delete return data ' + data);
+                        }
+
+                        $('#tc-panel-' + tcDict.index).remove();
+                    }
+                });
+            }
+        }
+    }
+
+    function createTCPanelStub(index, tc) {
+        var html = "";
+        if (tc !== null) {
+            var itemDict = {
+                tcId: tc._id,
+                index: index
+            }
+            html += "<div class=\"panel panel-default\" id=\"tc-panel-" + index + "\">";
+            html += "<div class=\"panel-heading\" role=\"tab\" id=\"heading" + index + "\">";
+            html += "<h4 class=\"panel-title\">";
+            html += "<a class=\"collapsed\" role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + index + "\" aria-expanded=\"false\" aria-controls=\"collapse" + index + "\">Ticket Category " + index + "</a>";
+            html += "<button role=\"button\" type=\"button\" onclick='deleteTC(" + JSON.stringify(itemDict) + ")' class=\"btn btn-xs btn-default pull-right\"><i class=\"fa fa-close\" aria-hidden=\"true\"></i></button>";
+            html += "</h4>";
+            html += "</div>";
+            html += "<div id=\"collapse" + index + "\" class=\"panel-collapse collapse\" role=\"tabpanel\" aria-labelledby=\"heading" + index + "\">";
+            html += "<div class=\"panel-body\">";
+            html += "<form data-toggle=\"validator\" role=\"form\">"
+            html += "<label for=\"tc-name-" + index + "\">Name</label><input type=\"text\" class=\"form-control\" id=\"tc-name-" + index + "\" placeholder=\"e.g. 'General Admission' \" value=\"" + tc.name + "\" required>";
+            html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required>" + tc.description + "</textarea>"
+            html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"" + tc.price + "\" required></div>";
+            html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"" + tc.numTickets + "\" required>";
+            html += "</form>";
+            html += "</div>";
+            html += "</div>";
+            html += "</div>";
+        } else {
+            html += "<div class=\"panel panel-default\" id=\"tc-panel-" + index + "\">";
+            html += "<div class=\"panel-heading\" role=\"tab\" id=\"heading" + index + "\">";
+            html += "<h4 class=\"panel-title\">";
+            html += "<a class=\"collapsed\" role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + index + "\" aria-expanded=\"false\" aria-controls=\"collapse" + index + "\">Ticket Category " + index + "</a>";
+            html += "</h4>";
+            html += "</div>";
+            html += "<div id=\"collapse" + index + "\" class=\"panel-collapse collapse\" role=\"tabpanel\" aria-labelledby=\"heading" + index + "\">";
+            html += "<div class=\"panel-body\">";
+            html += "<form data-toggle=\"validator\" role=\"form\">"
+            html += "<label for=\"tc-name-" + index + "\">Name</label><input type=\"text\" class=\"form-control\" id=\"tc-name-" + index + "\" placeholder=\"e.g. 'General Admission' \" required>";
+            html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required></textarea>"
+            html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" required></div>";
+            html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" required>";
+            html += "</form>";
+            html += "</div>";
+            html += "</div>";
+            html += "</div>";
+        }
+        return html;
+    }
+
+    $('#edit-add-tc-button').on('click', function(event) {
+        event.preventDefault();
+        var index = $('#edit-accordion').children('.panel').length + 1;
+        var html = createTCPanelStub(index, null);
+        if (index > 4) {
+            $(this).attr('disabled', 'disabled');
+        }
+        $('#edit-accordion').append(html);
+    });
+
+    $('#edit-save-event').click(function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        $btn.button('loading');
+        var validTC = true;
+        if ($('#edit-accordion').children('.panel').length > 0) {
+            for (var j = 1; j <= $('#edit-accordion').children('.panel').length; j++) {
+                if ($('#tc-name-' + j).val() === null
+                    || $('#tc-description-' + j).val() === null
+                    || $('#tc-price-' + j).val() === null
+                    || $('#tc-numtickets-' + j).val() === null) {
+                    validTC = false;
+                    break;
+                }
+            }
+        } else {
+            validTC = false;
+        }
+
+        if (validTC
+            && $('#edit-event-name').val() !== null
+            && $('#edit-event-description').val() !== null
+            && $('#edit-event-location').val() !== null
+            && $('#edit-event-url').val() !== null
+            && $('#edit-event-start-date').data("DateTimePicker").date() !== null
+            && $('#edit-event-end-date').data("DateTimePicker").date() !== null
+            && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
+        ) {
+            var eventName = $('#edit-event-name').val();
+            var eventDescription = $('#edit-event-description').val();
+            var eventLocation = $('#edit-event-location').val();
+            var eventUrl = $('#edit-event-url').val();
+            var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
+            var endDate = $('#edit-event-end-date').data("DateTimePicker").date();
+
+            var postData = {
+                "name" : eventName,
+                "location" : eventLocation,
+                "description" : eventDescription,
+                "url" : eventUrl,
+                "startDate" : startDate.toDate(),
+                "endDate" : endDate.toDate()
+            }
+            //console.log('PUTDATA: ' + JSON.stringify(postData, null, '\t'));
+
+            var tcData = [];
+            for (var i = 1; i <= $('#edit-accordion').children('.panel').length; i++) {
+                tcData.push({
+                    name: $('#tc-name-' + i).val(),
+                    description: $('#tc-description-' + i).val(),
+                    price: $('#tc-price-' + i).val(),
+                    numTickets: $('#tc-numtickets-' + i).val(),
+                    numTicketsSold: 0,
+                    tickets: [],
+                    event: $('#edit-save-event').data('event-id')
+                });
+            }
+            var putDict = {
+                tcArr: tcData,
+                eventId: $('#edit-save-event').data('event-id')
+            }
+
+            $.ajax({
+                url: '/events/' + $('#edit-save-event').data('event-id'),
+                method: 'PUT',
+                data: postData,
+                success: function (data) {
+                    if (data) {
+                        console.log('EVENT CHNG: ' + JSON.stringify(data));
+                        console.log('update event success');
+                    }
+                    //bulk update tcs
+                    $.ajax({
+                        url: '/ticket-categories',
+                        method: 'PUT',
+                        data: putDict,
+                        success: function (data) {
+                            if (data) {
+                                console.log('TCS: ' + JSON.stringify(data));
+                                console.log('upsert event tcs success');
+                            }
+                            $('#edit-event-modal').hide();
+                            $btn.button('reset');
+                            location.reload();
+                        }
+                    });
+                }
+            });
+        } else {
+            $btn.button('reset');
+            console.log('invalid data');
+        }
+    });
+
 
 
 </script>

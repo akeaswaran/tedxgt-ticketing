@@ -20,6 +20,13 @@ module.exports = function(app) {
     app.put('/tickets/:id', tickets.update);
     app.delete('/tickets/:id', tickets.delete);
 
+    var ticketCategories = require('./controllers/ticket-categories');
+    app.get('/ticket-categories', ticketCategories.findAll);
+    app.get('/ticket-categories/:id', ticketCategories.findById);
+    app.post('/ticket-categories', ticketCategories.addMany);
+    app.put('/ticket-categories', ticketCategories.updateMany);
+    app.delete('/ticket-categories/:id', ticketCategories.delete);
+
     var accounts = require('./controllers/accounts');
     app.get('/accounts', accounts.findAll);
     app.get('/accounts/:id', accounts.findById);

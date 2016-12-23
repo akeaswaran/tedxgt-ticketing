@@ -1,13 +1,19 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-var Attendee = require('./attendee');
-var Event = require('./event');
-var TicketCategory = require('./ticket-category');
 
 var TicketSchema = new Schema({
-    attendee: Attendee,
-    event: Event,
-    ticketCategory: TicketCategory,
+    attendee: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Attendee'
+    },
+    event: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Event'
+    },
+    ticketCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TicketCategory'
+    },
     price: Number
 });
 

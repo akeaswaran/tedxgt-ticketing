@@ -62,6 +62,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 require('./models/event');
+require('./models/ticket-category');
 require('./models/attendee');
 require('./models/ticket');
 require('./routes')(app);
@@ -89,9 +90,13 @@ db.on('error', function () {
     throw new Error('unable to connect to database at ' + mongoUri);
 });
 
+function isAuthed(req) {
+    return (req.isAuthenticated());// || process.env.ENVIRONMENT === 'dev');
+}
+
 /* ADMIN PAGES */
 app.get('/admin', function (request, response) {
-    if (request.isAuthenticated()) {
+    if (isAuthed(request)) {
         response.redirect('/adminPortal');
     } else {
         response.render('pages/admin-barrier', {
@@ -102,7 +107,7 @@ app.get('/admin', function (request, response) {
 });
 
 app.get('/accounts-list', function (request, response) {
-    if (request.isAuthenticated()) {
+    if (isAuthed(request)) {
         mongoose.model('Account').find()
             .where('_id', { $ne: request.user._id } )
             .sort('name')
@@ -126,13 +131,19 @@ app.get('/accounts-list', function (request, response) {
 });
 
 app.get('/adminPortal', function (request, response) {
-    if (request.isAuthenticated()) {
-        Event.findAll(request, response, function(results) {
+    if (isAuthed(request)) {
+        Event.findAll(request, response, function(err, results) {
+            if (err) {
+                handleError(err, 'warn');
+                return response.send(500);
+            }
+
             response.render('pages/admin-portal', {
                 orgName : 'TEDxGeorgiaTech',
                 events : results,
                 moment: moment,
-                account: request.user
+                account: request.user,
+                env: process.env.ENVIRONMENT
             });
         });
     } else {
@@ -141,7 +152,7 @@ app.get('/adminPortal', function (request, response) {
 });
 
 app.get('/accountRequests', function(request, response) {
-    if (request.isAuthenticated()) { //&& request.user.isAdmin) {
+    if (isAuthed(request) && request.user.isAdmin) {
         mongoose.model('Account').find()
             .where('isAdmin', false)
             .where('approved', false)
@@ -296,9 +307,14 @@ app.get('/ping', function(req, res){
 });
 
 app.get('/', function (request, response) {
-    Event.findAll(request, response, function(results) {
+    Event.findAll(request, response, function(err, results) {
+        if (err) {
+            handleError(err, 'warn');
+            return response.send(500);
+        }
+
         response.render('pages/index', {
-            events: results,
+            events : results,
             moment: moment
         });
     });
@@ -344,7 +360,7 @@ app.use(function(req, res) {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+if (process.env.ENVIRONMENT === 'dev') {
     app.use(function(err, req, res) {
         handleError(err, 'debug');
         res.send(err.status || 500);
@@ -353,11 +369,13 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res) {
-    handleError(err, 'warn');
-    console.log(err);
-    res.status(err.status || 500);
-});
+if (process.env.ENVIRONMENT === 'prod') {
+    app.use(function(err, req, res) {
+        handleError(err, 'warn');
+        console.log(err);
+        res.status(err.status || 500);
+    });
+}
 
 
 module.exports = app;

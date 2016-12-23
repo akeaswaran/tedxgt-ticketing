@@ -2,9 +2,14 @@ var mongoose = require('mongoose'),
     Event = mongoose.model('Event');
 
 exports.findAll = function(req, res, callback){
-    Event.find({},function(err, results) {
-        callback(results);
-    });
+    Event.find({})
+        .populate('attendees')
+        .populate('ticketCategories')
+        .then(function(results) {
+            callback(null, results);
+        }, function(err) {
+            callback(err, []);
+        });
 };
 
 exports.findById = function(req, res, callback) {

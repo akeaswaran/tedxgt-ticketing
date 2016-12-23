@@ -1,10 +1,15 @@
 var mongoose = require('mongoose'),
     Ticket = mongoose.model('Ticket');
 
-exports.findAll = function(req, res){
-    Ticket.find({},function(err, results) {
-        return res.send(results);
-    });
+exports.findAll = function(req, res, callback){
+    Ticket.find({})
+        //.populate('attendee')
+        //.populate('ticketCategory')
+        .then(function(results) {
+            callback(null, results);
+        }, function(err) {
+            callback(err, []);
+        });
 };
 
 exports.findById = function(req, res) {

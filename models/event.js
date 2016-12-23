@@ -1,7 +1,5 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-var Attendee = require('./attendee');
-var TicketCategory = require('./ticket-category');
 
 var EventSchema = new Schema({
     name: String,
@@ -10,11 +8,23 @@ var EventSchema = new Schema({
     startDate: Date,
     endDate: Date,
     url: String,
-    attendees: [Attendee],
-    ticketCategories: [TicketCategory],
+    attendees: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Attendee'
+    }],
+    ticketCategories: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TicketCategory'
+    }],
     totalTickets: Number,
     miscData: Array,
     closed: Boolean
+});
+
+EventSchema.pre('remove', function(next) {
+    // Remove all the docs that reference the removed event.
+    mongoose.model('TicketCategory').remove({ event: this._id }, next);
+    mongoose.model('Ticket').remove({ event: this._id }, next);
 });
 
 mongoose.model('Event', EventSchema);
