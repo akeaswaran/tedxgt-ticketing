@@ -202,7 +202,7 @@
         handler.open({
             name: 'TEDxGeorgiaTech',
             description: "Ticket for " + tcData.name  + " section in event <%= event.name %>",
-            amount: 0.00//tcData.price * 100
+            amount: tcData.price * 100
         });
         e.preventDefault();
         $(window).on('popstate', function() {
