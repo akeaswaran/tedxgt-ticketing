@@ -96,6 +96,10 @@ function isAuthed(req) {
     return (req.isAuthenticated());// || process.env.ENVIRONMENT === 'dev');
 }
 
+app.get('/.well-known/acme-challenge/pkZjfIhjGQWG7lCpVeJQPCBiR6Ex-2aBDl7drgV10t0', function (req, res) {
+   return res.render('pkZjfIhjGQWG7lCpVeJQPCBiR6Ex-2aBDl7drgV10t0.GZEsEveplCw8jE-uFO_ZOHHElrazVJjR8CBZUCxxhiU');
+});
+
 /* ADMIN PAGES */
 app.get('/admin', function (request, response) {
     if (isAuthed(request)) {
