@@ -238,7 +238,7 @@ app.get('/adminPortal', function (request, response) {
         Event.findAll(request, response, function(err, results) {
             if (err) {
                 handleError(err, 'warn');
-                return response.send(500);
+                response.send(500);
             }
 
             response.render('pages/admin-portal', {

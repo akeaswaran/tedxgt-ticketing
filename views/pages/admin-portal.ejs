@@ -362,15 +362,17 @@
 <script type="text/javascript" src="/js/moment.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.8/validator.min.js"></script>
+<script type="text/javascript" src="/bootstrap-validator/validator.min.js"></script>
 
 <script>
     $(function () {
         $('#event-start-date').datetimepicker({
-            minDate: moment()
+            minDate: moment(),
+            date: moment(),
         });
         $('#event-end-date').datetimepicker({
             minDate: moment(),
+            date: moment().add(1, 'days'),
             useCurrent: false
         });
 
@@ -608,8 +610,8 @@
         $('#edit-event-location').val(event.location);
         $('#edit-event-url').val(event.url);
         $('#edit-close-event-box').val(event.closed);
-        $('#edit-event-start-date').data("DateTimePicker").defaultDate(moment(event.startDate));
-        $('#edit-event-end-date').data("DateTimePicker").defaultDate(moment(event.endDate));
+        $('#edit-event-start-date').data("DateTimePicker").date(moment(event.startDate));
+        $('#edit-event-end-date').data("DateTimePicker").date(moment(event.endDate));
 
         event.ticketCategories.forEach(function(tc) {
             var index = $('#edit-accordion').children('.panel').length + 1;
