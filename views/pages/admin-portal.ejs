@@ -96,7 +96,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="save-event" type="button" class="btn btn-default" data-loading="Creating Event...">Save</button>
+                <button id="save-draft" type="button" class="btn btn-default" data-loading="Saving Draft...">Save Draft</button>
+                <button id="save-event" type="button" class="btn btn-success" data-loading="Creating Event...">Publish</button>
             </div>
         </div>
     </div>
@@ -163,8 +164,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="edit-delete-event" type="button" class="btn btn-danger" data-loading="Deleting Event...">Delete</button>
-                <button id="edit-save-event" type="button" class="btn btn-default" data-loading="Saving Changes...">Save</button>
+                <button id="edit-delete-event" type="button" class="btn btn-danger pull-left" data-loading="Deleting Event...">Delete</button>
+                <button id="edit-save-event" type="button" class="btn btn-success pull-right" data-loading="Saving Changes...">Publish</button>
+                <button id="edit-save-draft" type="button" class="btn btn-default pull-right" data-loading="Saving Changes...">Save Draft</button>
             </div>
         </div>
     </div>
@@ -305,6 +307,7 @@
                     <th>Name</th>
                     <th>Start Date</th>
                     <th>Attendees / Tickets</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -331,6 +334,15 @@
                             <% } else { %>
                                 <%= event.attendees.length %> / <%= sumTickets %>
                             <% } %>
+                        <% }%>
+                    </td>
+                    <td>
+                        <% if (event.closed) { %>
+                        Registration Closed
+                        <% } else if (!event.live) { %>
+                        Saved as Draft
+                        <% } else { %>
+                        Registration Open
                         <% }%>
                     </td>
                 </tr>
@@ -420,7 +432,9 @@
                 "description" : eventDescription,
                 "url" : eventUrl,
                 "startDate" : startDate.toDate(),
-                "endDate" : endDate.toDate()
+                "endDate" : endDate.toDate(),
+                "closed" : false,
+                "live" : true
             }
             console.log('POSTDATA: ' + JSON.stringify(postData, null, '\t'));
 
@@ -441,6 +455,94 @@
                     console.log('post result ' + JSON.stringify(data));
                     tcData.forEach(function(tc) {
                        tc.event = data._id;
+                    });
+                    var postDict = {
+                        tcArr: tcData,
+                        eventId: data._id
+                    }
+
+                    $.post("/ticket-categories", postDict, function(tcs) {
+                        if (tcs) {
+                            console.log('TCS: ' + JSON.stringify(tcs));
+                            console.log('update event tcs success');
+                        }
+
+                        $('#new-event-modal').hide();
+                        $btn.button('reset');
+                        location.reload();
+                    });
+                }
+            });
+        } else {
+            $btn.button('reset');
+            console.log('invalid data');
+        }
+    });
+
+    $('#save-draft').click(function(event) {
+        event.preventDefault();
+        var $btn = $(this);
+        $btn.button('loading');
+        var validTC = true;
+        if ($('#accordion').children('.panel').length > 0) {
+            for (var j = 1; j <= $('#accordion').children('.panel').length; j++) {
+                if ($('#tc-name-' + j).val() === null
+                    || $('#tc-description-' + j).val() === null
+                    || $('#tc-price-' + j).val() === null
+                    || $('#tc-numtickets-' + j).val() === null) {
+                    validTC = false;
+                    break;
+                }
+            }
+        } else {
+            validTC = false;
+        }
+
+        if (validTC
+            && $('#event-name').val() !== null
+            && $('#event-description').val() !== null
+            && $('#event-location').val() !== null
+            && $('#event-url').val() !== null
+            && $('#event-start-date').data("DateTimePicker").date() !== null
+            && $('#event-end-date').data("DateTimePicker").date() !== null
+            && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
+        ) {
+            var eventName = $('#event-name').val();
+            var eventDescription = $('#event-description').val();
+            var eventLocation = $('#event-location').val();
+            var eventUrl = $('#event-url').val();
+            var startDate = $('#event-start-date').data("DateTimePicker").date();
+            var endDate = $('#event-end-date').data("DateTimePicker").date();
+
+            var postData = {
+                "name" : eventName,
+                "location" : eventLocation,
+                "description" : eventDescription,
+                "url" : eventUrl,
+                "startDate" : startDate.toDate(),
+                "endDate" : endDate.toDate(),
+                "closed" : false,
+                "live" : false
+            }
+            console.log('POSTDATA: ' + JSON.stringify(postData, null, '\t'));
+
+            var tcData = [];
+            for (var i = 1; i <= $('#accordion').children('.panel').length; i++) {
+                tcData.push({
+                    name: $('#tc-name-' + i).val(),
+                    description: $('#tc-description-' + i).val(),
+                    price: $('#tc-price-' + i).val(),
+                    numTickets: $('#tc-numtickets-' + i).val(),
+                    numTicketsSold: 0,
+                    tickets: []
+                });
+            }
+
+            $.post("/events", postData, function(data) {
+                if (data && data.hasOwnProperty('_id')) {
+                    console.log('post result ' + JSON.stringify(data));
+                    tcData.forEach(function(tc) {
+                        tc.event = data._id;
                     });
                     var postDict = {
                         tcArr: tcData,
@@ -495,6 +597,10 @@
         $('#accordion').empty();
     });
 
+    $('#edit-event-modal').on('hidden.bs.modal', function () {
+        $('#edit-accordion').empty();
+    });
+
     function showEditEventModal(eventString) {
         var event = eventString;
         $('#edit-event-name').val(event.name);
@@ -515,6 +621,7 @@
         })
 
         $('#edit-save-event').data('event-id', event._id);
+        $('#edit-save-draft').data('event-id', event._id);
 
         $('#edit-delete-event').on('click', function(e) {
            e.preventDefault();
@@ -651,6 +758,7 @@
             var eventUrl = $('#edit-event-url').val();
             var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
             var endDate = $('#edit-event-end-date').data("DateTimePicker").date();
+            var closedStatus = $('#edit-close-event-box').val();
 
             var postData = {
                 "name" : eventName,
@@ -658,9 +766,10 @@
                 "description" : eventDescription,
                 "url" : eventUrl,
                 "startDate" : startDate.toDate(),
-                "endDate" : endDate.toDate()
+                "endDate" : endDate.toDate(),
+                "live" : true,
+                "closed" : closedStatus
             }
-            //console.log('PUTDATA: ' + JSON.stringify(postData, null, '\t'));
 
             var tcData = [];
             for (var i = 1; i <= $('#edit-accordion').children('.panel').length; i++) {
@@ -711,7 +820,101 @@
         }
     });
 
+    $('#edit-save-draft').click(function(e) {
+        e.preventDefault();
+        var $btn = $(this);
+        $btn.button('loading');
+        var validTC = true;
+        if ($('#edit-accordion').children('.panel').length > 0) {
+            for (var j = 1; j <= $('#edit-accordion').children('.panel').length; j++) {
+                if ($('#tc-name-' + j).val() === null
+                    || $('#tc-description-' + j).val() === null
+                    || $('#tc-price-' + j).val() === null
+                    || $('#tc-numtickets-' + j).val() === null) {
+                    validTC = false;
+                    break;
+                }
+            }
+        } else {
+            validTC = false;
+        }
 
+        if (validTC
+            && $('#edit-event-name').val() !== null
+            && $('#edit-event-description').val() !== null
+            && $('#edit-event-location').val() !== null
+            && $('#edit-event-url').val() !== null
+            && $('#edit-event-start-date').data("DateTimePicker").date() !== null
+            && $('#edit-event-end-date').data("DateTimePicker").date() !== null
+            && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
+        ) {
+            var eventName = $('#edit-event-name').val();
+            var eventDescription = $('#edit-event-description').val();
+            var eventLocation = $('#edit-event-location').val();
+            var eventUrl = $('#edit-event-url').val();
+            var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
+            var endDate = $('#edit-event-end-date').data("DateTimePicker").date();
+            var closedStatus = $('#edit-close-event-box').val();
+
+            var postData = {
+                "name" : eventName,
+                "location" : eventLocation,
+                "description" : eventDescription,
+                "url" : eventUrl,
+                "startDate" : startDate.toDate(),
+                "endDate" : endDate.toDate(),
+                "live" : false,
+                "closed" : closedStatus
+            }
+
+            var tcData = [];
+            for (var i = 1; i <= $('#edit-accordion').children('.panel').length; i++) {
+                tcData.push({
+                    name: $('#tc-name-' + i).val(),
+                    description: $('#tc-description-' + i).val(),
+                    price: $('#tc-price-' + i).val(),
+                    numTickets: $('#tc-numtickets-' + i).val(),
+                    numTicketsSold: 0,
+                    tickets: [],
+                    event: $('#edit-save-event').data('event-id')
+                });
+            }
+            var putDict = {
+                tcArr: tcData,
+                eventId: $('#edit-save-event').data('event-id')
+            }
+
+            $.ajax({
+                url: '/events/' + $('#edit-save-event').data('event-id'),
+                method: 'PUT',
+                data: postData,
+                success: function (data) {
+                    if (data) {
+                        console.log('EVENT CHNG: ' + JSON.stringify(data));
+                        console.log('update event success');
+                    }
+                    //bulk update tcs
+                    $.ajax({
+                        url: '/ticket-categories',
+                        method: 'PUT',
+                        data: putDict,
+                        success: function (data) {
+                            if (data) {
+                                console.log('TCS: ' + JSON.stringify(data));
+                                console.log('upsert event tcs success');
+                            }
+                            $('#edit-event-modal').hide();
+                            $btn.button('reset');
+                            location.reload();
+                        }
+                    });
+                }
+            });
+        } else {
+            $btn.button('reset');
+            console.log('invalid data');
+        }
+    });
 
 </script>
 

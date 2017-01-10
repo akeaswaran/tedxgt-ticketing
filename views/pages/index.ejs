@@ -27,9 +27,6 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:creator" content="@TEDxGeorgiaTech">
 
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="shortcut icon" href="images/icons/favicon.png">
-
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700' rel='stylesheet' type='text/css'>
 
     <!-- Animate.css -->
@@ -190,9 +187,9 @@
                                 <h3><%= item.description %></h3>
 
                                 <% if (moment().isAfter(item.startDate) || item.closed) { %>
-                                    <p><a class="btn" style="background:#e62b1e; color:rgba(255,255,255,0.5);" target="_blank" href="#">Registration Closed</a></p>
+                                <p><a class="btn" style="background:#e62b1e; color:rgba(255,255,255,0.5);" target="_blank" href="#">Registration Closed</a></p>
                                 <% } else { %>
-                                    <p><a class="btn" style="background:#e62b1e; color:rgba(255,255,255,1.0);" target="_blank" href="/event/<%= item._id %>">Reserve Seats!</a></p>
+                                <p><a class="btn" style="background:#e62b1e; color:rgba(255,255,255,1.0);" target="_blank" href="/event/<%= item._id %>">Reserve Seats!</a></p>
                                 <% } %>
                             </div>
                         <%});%>

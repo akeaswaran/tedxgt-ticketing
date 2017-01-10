@@ -16,7 +16,8 @@ var EventSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TicketCategory'
     }],
-    closed: Boolean
+    closed: Boolean,
+    live: Boolean
 });
 
 EventSchema.pre('remove', function(next) {

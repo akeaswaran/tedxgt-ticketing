@@ -1,6 +1,6 @@
 {
   "name": "tedxgt-ticketing",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "A simple web app to manage event registration and ticketing.",
   "main": "server.js",
   "scripts": {

@@ -410,17 +410,24 @@ app.get('/ping', function(req, res){
 });
 
 app.get('/', function (request, response) {
-    Event.findAll(request, response, function(err, results) {
-        if (err) {
-            handleError(err, 'warn');
-            return response.send(500);
-        }
+    mongoose.model('Event').find({ 'live' : true })
+        .populate('attendees')
+        .populate('ticketCategories')
+        .then(function(results) {
+            response.render('pages/index', {
+                events : results,
+                moment: moment
+            });
+        }, function(err) {
+            if (err) {
+                handleError(err, 'warn');
+            }
 
-        response.render('pages/index', {
-            events : results,
-            moment: moment
+            response.render('pages/index', {
+                events : [],
+                moment: moment
+            });
         });
-    });
 });
 
 app.get('/event/:id', function(req, res) {
