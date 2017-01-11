@@ -572,23 +572,7 @@
     $('#add-tc-button').on('click', function(event) {
         event.preventDefault();
         var index = $('#accordion').children('.panel').length + 1;
-        var html = "<div class=\"panel panel-default\">";
-        html += "<div class=\"panel-heading\" role=\"tab\" id=\"heading" + index + "\">";
-        html += "<h4 class=\"panel-title\">";
-        html += "<a class=\"collapsed\" role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + index + "\" aria-expanded=\"false\" aria-controls=\"collapse" + index + "\">Ticket Category " + index + "</a>";
-        html += "</h4>";
-        html += "</div>";
-        html += "<div id=\"collapse" + index + "\" class=\"panel-collapse collapse\" role=\"tabpanel\" aria-labelledby=\"heading" + index + "\">";
-        html += "<div class=\"panel-body\">";
-        html += "<form data-toggle=\"validator\" role=\"form\">"
-        html += "<label for=\"tc-name-" + index + "\">Name</label><input type=\"text\" class=\"form-control\" id=\"tc-name-" + index + "\" placeholder=\"e.g. 'General Admission' \" required>";
-        html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required></textarea>"
-        html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" required></div>";
-        html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" required>";
-        html += "</form>";
-        html += "</div>";
-        html += "</div>";
-        html += "</div>";
+        var html = createTCPanelStub(index, null);
         if (index > 4) {
             $(this).attr('disabled', 'disabled');
         }
@@ -704,10 +688,10 @@
             html += "<div id=\"collapse" + index + "\" class=\"panel-collapse collapse\" role=\"tabpanel\" aria-labelledby=\"heading" + index + "\">";
             html += "<div class=\"panel-body\">";
             html += "<form data-toggle=\"validator\" role=\"form\">"
-            html += "<label for=\"tc-name-" + index + "\">Name</label><input type=\"text\" class=\"form-control\" id=\"tc-name-" + index + "\" placeholder=\"e.g. 'General Admission' \" required>";
-            html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required></textarea>"
-            html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" required></div>";
-            html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" required>";
+            html += "<label for=\"tc-name-" + index + "\">Name</label><input type=\"text\" class=\"form-control\" id=\"tc-name-" + index + "\" placeholder=\"e.g. 'General Admission' \" value=\"New TC\" required>";
+            html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required>New TC Details</textarea>"
+            html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"0.00\" required></div>";
+            html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"100\" required>";
             html += "</form>";
             html += "</div>";
             html += "</div>";

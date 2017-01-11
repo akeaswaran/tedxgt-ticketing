@@ -469,23 +469,29 @@ app.post('/charge', function(req, res) {
         }
         console.log('TOKEN: ' + JSON.stringify(stripeToken, null, '\t'));
 
-        stripe.charges.create({
-                source: stripeToken.id,
-                currency: 'usd',
-                amount: (tcData.price * 100), //converting to cents
-                description: "Ticket for " + tcData.name  + " section in event " + event.name,
-                receipt_email: attendeeData.email,
-                statement_descriptor: 'TEDxGT Event Ticket'
-            },
-            function(err, charge) {
-                if (err) {
-                    console.log("CHARGE CREATE: " + err);
-                    res.send(500, err);
-                } else {
-                    handleChargeResult(res, attendeeData, tcData);
+        // do not create a charge for a free ticket
+        if ((stripeToken !== '' && stripeToken.hasOwnProperty('id')) && (tcData.price !== 0 && tcData.price !== '0'
+            && tcData.price !== '0.00' && tcData.price !== 0.00)) {
+            stripe.charges.create({
+                    source: stripeToken.id,
+                    currency: 'usd',
+                    amount: (tcData.price * 100), //converting to cents
+                    description: "Ticket for " + tcData.name  + " section in event " + event.name,
+                    receipt_email: attendeeData.email,
+                    statement_descriptor: 'TEDxGT Event Ticket'
+                },
+                function(err, charge) {
+                    if (err) {
+                        console.log("CHARGE CREATE: " + err);
+                        res.send(500, err);
+                    } else {
+                        handleChargeResult(res, attendeeData, tcData);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            handleChargeResult(res, attendeeData, tcData);
+        }
     });
 });
 

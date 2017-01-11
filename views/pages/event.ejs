@@ -94,7 +94,7 @@
             <h3><%= event.description %></h3>
         </div>
     </div>
-    <% if ((event.closed !== null && event.closed !== false) && event.ticketCategories !== null && event.ticketCategories.length > 0) { %>
+    <% if ((event.closed !== null && event.closed === false) && event.ticketCategories !== null && event.ticketCategories.length > 0) { %>
     <div class="row">
         <div class="col-md-12 faux-section-heading text-center">
             <h2>TICKETS</h2>
@@ -107,7 +107,11 @@
                                 <tr>
                                     <th><%= ticketCategory.name %> (<%= ticketCategory.numTickets - ticketCategory.numTicketsSold %> left)</th>
                                     <td align="center"><%= ticketCategory.description %></td>
+                                    <% if (ticketCategory.price > 0) { %>
                                     <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy ($<%= ticketCategory.price %>)</button></td>
+                                    <% } else { %>
+                                    <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy (Free)</button></td>
+                                    <% } %>
                                 </tr>
                             <%  }); %>
                         </tbody>
@@ -122,9 +126,9 @@
             <h2>SHARE</h2>
             <h3 class="subtext">Let all your friends know about this upcoming event!</h3>
             <ul class="social social-circle">
-                <li><a href="https://twitter.com/home?status=Check%20out%20@TEDxGeorgiaTech's%20event:%20<%= event.name %>!%20http://tedxgeorgiatech.com/event/<%= event._id %>"><i class="icon-twitter"></i></a></li>
-                <li><a href="http://www.facebook.com/share.php?u=http://tedxgeorgiatech.com/event/<%= event._id %>"><i class="icon-facebook"></i></a></li>
-                <li><a href="mailto:%20?Subject=Check%20out%20TEDxGeorgiaTech%27s%20event%3A%20<%= event.name %>%21&Body=I%20think%20you%27d%20be%20interested%20in%20this%3A%20http://tedxgeorgiatech.com/event/<%= event._id %>%21"><i class="icon-envelope"></i></a></li>
+                <li><a href="https://twitter.com/home?status=Check%20out%20@TEDxGeorgiaTech's%20event:%20<%= event.name %>!%20http://tedxgeorgiatech.com/event/<%= event._id %>"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                <li><a href="http://www.facebook.com/share.php?u=http://tedxgeorgiatech.com/event/<%= event._id %>"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                <li><a href="mailto:%20?Subject=Check%20out%20TEDxGeorgiaTech%27s%20event%3A%20<%= event.name %>%21&Body=I%20think%20you%27d%20be%20interested%20in%20this%3A%20http://tedxgeorgiatech.com/event/<%= event._id %>%21"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
             </ul>
         </div>
     </div>
@@ -134,7 +138,7 @@
     <div class="container">
         <div class="row row-bottom-padded-sm">
             <div class="col-md-12">
-                <p class="copyright text-center">&copy; 2016 Georgia Tech. All Rights Reserved.</p>
+                <p class="copyright text-center">&copy; 2017 Georgia Tech. All Rights Reserved.</p>
             </div>
         </div>
     </div>
@@ -158,6 +162,25 @@
 <script src="https://checkout.stripe.com/checkout.js"></script>
 
 <script>
+    function postCharge(token, tcData, attData) {
+        $.post("/charge",
+            {
+                token: token,
+                attData: attData,
+                tcData: tcData
+            },
+            function(data) {
+                console.log("DATA: " + JSON.stringify(data, null, '\t'));
+                if (data["status"] == "ok") {
+                    window.location = "/confirmation/" + data.ticket._id;
+                } else {
+                    // Deal with error
+                    alert(data["message"]);
+                }
+            }
+        );
+    }
+
     function createCheckoutHandler(tcData, attData) {
         return StripeCheckout.configure({
             key: '<%= stripePublicKey %>',
@@ -167,22 +190,7 @@
             email: attData.email,
             token: function(token) {
                 // Send the charge through
-                $.post("/charge",
-                    {
-                        token: token,
-                        attData: attData,
-                        tcData: tcData
-                    },
-                    function(data) {
-                    console.log("DATA: " + JSON.stringify(data, null, '\t'));
-                        if (data["status"] == "ok") {
-                            window.location = "/confirmation/" + data.ticket._id;
-                        } else {
-                            // Deal with error
-                            alert(data["message"]);
-                        }
-                    }
-                );
+                postCharge(token, tcData, attData);
             }
         });
     }
@@ -197,17 +205,22 @@
         var tcIdx = $('#buy-event-ticket-button').data('idx');
         var tcs = <%- JSON.stringify(event.ticketCategories) %>;
         var tcData = tcs[tcIdx];
+        var attData =  { name: $('#charge-name').val(), email: $('#charge-email').val() };
 
-        var handler = createCheckoutHandler(tcData, { name: $('#charge-name').val(), email: $('#charge-email').val() });
-        handler.open({
-            name: 'TEDxGeorgiaTech',
-            description: "Ticket for " + tcData.name  + " section in event <%= event.name %>",
-            amount: tcData.price * 100
-        });
-        e.preventDefault();
-        $(window).on('popstate', function() {
-            handler.close();
-        });
+        if (tcData.price !== 0 && tcData.price !== '0' && tcData.price !== '0.00' && tcData.price !== 0.00) {
+            var handler = createCheckoutHandler(tcData, attData);
+            handler.open({
+                name: 'TEDxGeorgiaTech',
+                description: "Ticket for " + tcData.name  + " section in event <%= event.name %>",
+                amount: tcData.price * 100
+            });
+            e.preventDefault();
+            $(window).on('popstate', function() {
+                handler.close();
+            });
+        } else {
+            postCharge('', tcData, attData);
+        }
     });
 
 </script>
