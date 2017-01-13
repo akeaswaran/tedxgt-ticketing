@@ -54,18 +54,22 @@
                     <div class="form-group">
                         <label for="event-name" class="control-label">Name</label>
                         <input class="form-control" id="event-name" required>
+                        <p class="help-block">What will your event be called?</p>
                     </div>
                     <div class="form-group">
                         <label for="event-description" class="control-label">Description</label>
                         <textarea class="form-control" id="event-description" required></textarea>
+                        <p class="help-block">What will your event entail? <b>Note</b>: If you want to add an image to this event description, enable Tools > Source Code and add a img tag with the image's URL as the img's src attribute.</p>
                     </div>
                     <div class="form-group">
                         <label for="event-location" class="control-label">Location</label>
                         <input class="form-control" id="event-location" required>
+                        <p class="help-block">Where will your event be? <b>Note</b>: This will be used by Google Maps to help attendees get to your event, so make sure it is a valid address.</p>
                     </div>
                     <div class="form-group">
                         <label for="event-url" class="control-label">URL</label>
                         <input type="text" class="form-control" id="event-url" required>
+                        <p class="help-block">Where else can I find the event online?</p>
                     </div>
                     <div class="form-group">
                         <label for="event-start-date" class="control-label">Start Date</label>
@@ -75,6 +79,7 @@
                                         <span class="fa fa-calendar"></span>
                                     </span>
                         </div>
+                        <p class="help-block">When does the event start?</p>
                     </div>
                     <div class="form-group">
                         <label for="event-start-date" class="control-label">End Date</label>
@@ -84,6 +89,7 @@
                                 <span class="fa fa-calendar"></span>
                             </span>
                         </div>
+                        <p class="help-block">When does the event end?</p>
                     </div>
                     <div class="form-group">
                         <h4>
@@ -92,6 +98,7 @@
                         </h4>
                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         </div>
+                        <p class="help-block">What types of tickets do you want to have available?</p>
                     </div>
                 </form>
             </div>
@@ -115,18 +122,22 @@
                     <div class="form-group">
                         <label for="edit-event-name" class="control-label">Name</label>
                         <input class="form-control" id="edit-event-name" required>
+                        <p class="help-block">What will your event be called?</p>
                     </div>
                     <div class="form-group">
                         <label for="edit-event-description" class="control-label">Description</label>
                         <textarea class="form-control" id="edit-event-description" required></textarea>
+                        <p class="help-block">What will your event entail? <b>Note</b>: If you want to add an image to this event description, enable Tools > Source Code and add a img tag with the image's URL as the img's src attribute.</p>
                     </div>
                     <div class="form-group">
                         <label for="edit-event-location" class="control-label">Location</label>
                         <input class="form-control" id="edit-event-location" required>
+                        <p class="help-block">Where will your event be? <b>Note</b>: This will be used by Google Maps to help attendees get to your event, so make sure it is a valid address.</p>
                     </div>
                     <div class="form-group">
                         <label for="edit-event-url" class="control-label">URL</label>
                         <input type="text" class="form-control" id="edit-event-url" required>
+                        <p class="help-block">Where else can I find the event online?</p>
                     </div>
                     <div class="form-group">
                         <label for="edit-event-start-date" class="control-label">Start Date</label>
@@ -136,6 +147,7 @@
                                         <span class="fa fa-calendar"></span>
                                     </span>
                         </div>
+                        <p class="help-block">When does the event start?</p>
                     </div>
                     <div class="form-group">
                         <label for="edit-event-start-date" class="control-label">End Date</label>
@@ -145,11 +157,12 @@
                                 <span class="fa fa-calendar"></span>
                             </span>
                         </div>
+                        <p class="help-block">When does the event end?</p>
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
                             <label class="control-label">
-                                <input type="checkbox" id="edit-close-event-box"> Registration Closed?
+                                <input type="checkbox" id="edit-close-event-box"> Are Ticket Sales Closed?
                             </label>
                         </div>
                     </div>
@@ -160,6 +173,7 @@
                         </h4>
                         <div class="panel-group" id="edit-accordion" role="tablist" aria-multiselectable="true">
                         </div>
+                        <p class="help-block">What types of tickets do you want to have available?</p>
                     </div>
                 </form>
             </div>
@@ -363,6 +377,18 @@
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript" src="/bootstrap-validator/validator.min.js"></script>
+<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector:'textarea',
+        toolbar: false,
+        plugins:  [
+            'advlist autolink link lists charmap print preview hr anchor pagebreak spellchecker',
+            'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+            'save table contextmenu directionality emoticons template paste textcolor'
+        ]
+    });
+</script>
 
 <script>
     $(function () {
@@ -414,7 +440,7 @@
 
         if (validTC
             && $('#event-name').val() !== null
-            && $('#event-description').val() !== null
+            && tinymce.get('event-description').getContent() !== null
             && $('#event-location').val() !== null
             && $('#event-url').val() !== null
             && $('#event-start-date').data("DateTimePicker").date() !== null
@@ -422,7 +448,7 @@
             && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
         ) {
             var eventName = $('#event-name').val();
-            var eventDescription = $('#event-description').val();
+            var eventDescription = tinymce.get('event-description').getContent();
             var eventLocation = $('#event-location').val();
             var eventUrl = $('#event-url').val();
             var startDate = $('#event-start-date').data("DateTimePicker").date();
@@ -502,7 +528,7 @@
 
         if (validTC
             && $('#event-name').val() !== null
-            && $('#event-description').val() !== null
+            && tinymce.get('event-description').getContent() !== null
             && $('#event-location').val() !== null
             && $('#event-url').val() !== null
             && $('#event-start-date').data("DateTimePicker").date() !== null
@@ -510,7 +536,7 @@
             && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
         ) {
             var eventName = $('#event-name').val();
-            var eventDescription = $('#event-description').val();
+            var eventDescription = tinymce.get('event-description').getContent();
             var eventLocation = $('#event-location').val();
             var eventUrl = $('#event-url').val();
             var startDate = $('#event-start-date').data("DateTimePicker").date();
@@ -590,7 +616,7 @@
     function showEditEventModal(eventString) {
         var event = eventString;
         $('#edit-event-name').val(event.name);
-        $('#edit-event-description').val(event.description);
+        tinymce.get('edit-event-description').setContent(event.description);
         $('#edit-event-location').val(event.location);
         $('#edit-event-url').val(event.url);
         $('#edit-close-event-box').val(event.closed);
@@ -731,7 +757,7 @@
 
         if (validTC
             && $('#edit-event-name').val() !== null
-            && $('#edit-event-description').val() !== null
+            && tinymce.get('edit-event-description').getContent() !== null
             && $('#edit-event-location').val() !== null
             && $('#edit-event-url').val() !== null
             && $('#edit-event-start-date').data("DateTimePicker").date() !== null
@@ -739,7 +765,8 @@
             && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
         ) {
             var eventName = $('#edit-event-name').val();
-            var eventDescription = $('#edit-event-description').val();
+            var eventDescription = tinymce.get('edit-event-description').getContent();
+            console.log('EVENT DESCRIPTION STR: ' + eventDescription);
             var eventLocation = $('#edit-event-location').val();
             var eventUrl = $('#edit-event-url').val();
             var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
@@ -827,7 +854,7 @@
 
         if (validTC
             && $('#edit-event-name').val() !== null
-            && $('#edit-event-description').val() !== null
+            && tinymce.get('edit-event-description').getContent() !== null
             && $('#edit-event-location').val() !== null
             && $('#edit-event-url').val() !== null
             && $('#edit-event-start-date').data("DateTimePicker").date() !== null
@@ -835,7 +862,7 @@
             && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
         ) {
             var eventName = $('#edit-event-name').val();
-            var eventDescription = $('#edit-event-description').val();
+            var eventDescription = tinymce.get('edit-event-description').getContent();
             var eventLocation = $('#edit-event-location').val();
             var eventUrl = $('#edit-event-url').val();
             var startDate = $('#edit-event-start-date').data("DateTimePicker").date();

@@ -83,7 +83,11 @@
     <div class="row">
         <div class="col-md-12 faux-section-heading text-center">
             <h1><%= event.name %></h1>
-            <h3><%= event.startDate %> | <%= event.startDay %></h3>
+            <% if (event.startDay === event.endDay) { %>
+            <h3><%= event.startDate %> - <%= event.endDate %> | <%= event.startDay %></h3>
+            <% } else { %>
+            <h3><%= event.startDate %> <%= event.startDay %> - <%= event.endDate %> <%= event.endDay %></h3>
+            <% }%>
             <h4><a href="http://maps.google.com/?q=<%=event.location%>"><%= event.location %></a></h4>
             <h4><a href="<%= event.url %>"><%= event.url %></a></h4>
         </div>
@@ -91,7 +95,9 @@
     <div class="row">
         <div class="col-md-12 faux-section-heading text-center">
             <h2>DETAILS</h2>
-            <h3><%= event.description %></h3>
+            <h3>
+                <%- event.description %>
+            </h3>
         </div>
     </div>
     <% if ((event.closed !== null && event.closed === false) && event.ticketCategories !== null && event.ticketCategories.length > 0) { %>

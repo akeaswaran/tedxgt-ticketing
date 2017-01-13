@@ -43,6 +43,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">
                     <%= tickCat.name %>
+                    <a role="button" type="button" class="btn btn-xs btn-default pull-right" href="/ticket-category/<%= tickCat.id %>/csv">export to csv</a>
                 </h3>
             </div>
             <% if (tickCat.tickets.length > 0) { %>
@@ -59,8 +60,7 @@
                     <tr>
                         <td><%= moment(ticket._id.getTimestamp()).format('lll') %></td>
                         <td><%= ticket.attendee.name %></td>
-                        <td><%= ticket.attendee.email %></td>
-                        <td><a class="btn btn-xs btn-default pull-right" href="mailto:<%= ticket.attendee.email %>"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                        <td><a href="mailto:<%= attendee.email %>"><%= attendee.email %></a></td>
                     </tr>
                     <%});%>
                     </tbody>

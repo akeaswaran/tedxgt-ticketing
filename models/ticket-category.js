@@ -29,5 +29,12 @@ TicketCategorySchema.pre('remove', function(next) {
     );
 });
 
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+TicketCategorySchema.plugin(deepPopulate, {
+    whitelist: [
+        'tickets',
+        'tickets.attendee'
+    ]
+});
 
 mongoose.model('TicketCategory', TicketCategorySchema);

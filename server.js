@@ -15,7 +15,8 @@ var express = require('express'),
     EmailTemplate = require('email-templates').EmailTemplate,
     async = require('async'),
     path = require('path'),
-    stripe = require('stripe')(process.env.STRIPE_API_SECRET_KEY);
+    stripe = require('stripe')(process.env.STRIPE_API_SECRET_KEY),
+    csv = require('express-csv');
 
 //app setup
 var app = express();
@@ -450,7 +451,9 @@ app.get('/event/:id', function(req, res) {
                     closed: result.closed,
                     ticketCategories: result.ticketCategories,
                     startDate : moment(result.startDate).format('LT'),
-                    startDay : moment(result.endDate).format('LL')
+                    startDay : moment(result.startDate).format('LL'),
+                    endDate : moment(result.endDate).format('LT'),
+                    endDay : moment(result.endDate).format('LL')
                 },
                 stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY,
                 curDate: moment().format('llll')
@@ -540,7 +543,6 @@ app.get('/confirmation/:tId', function(req, res) {
          .populate('event')
          .limit(1)
          .then(function(results) {
-             //console.log("CONF TICKET RES: " + JSON.stringify(results, null, '\t'));
              res.render('pages/confirmation', {
                  ticket: results[0],
                  moment: moment
@@ -548,6 +550,54 @@ app.get('/confirmation/:tId', function(req, res) {
          }, function(err) {
              res.send(err);
          });
+});
+
+app.get('/ticket-category/:id/csv', function(req, res) {
+    mongoose.model('TicketCategory').find()
+        .where('_id', req.params.id)
+        .populate('tickets')
+        .deepPopulate('tickets.attendee')
+        .sort('name')
+        .then(
+            function(docs) {
+                var tc = docs[0];
+                var csv = [];
+                tc.tickets.forEach(function(ticket) {
+                    csv.push({name: ticket.attendee.name, email:ticket.attendee.email })
+                });
+                res.csv(csv);
+            },
+            function(error) {
+                if (error) {
+                    handleError(err, 'warn');
+                    res.send(500);
+                }
+            }
+        );
+});
+
+
+app.get('/event/:id/attendees/csv', function(req, res) {
+    mongoose.model('Event').find()
+        .where('_id', req.params.id)
+        .populate('attendees')
+        .sort('name')
+        .then(
+            function(docs) {
+                var event = docs[0];
+                var csv = [];
+                event.attendees.forEach(function(attendee) {
+                    csv.push({name: attendee.name, email:attendee.email })
+                });
+                res.csv(csv);
+            },
+            function(error) {
+                if (error) {
+                    handleError(err, 'warn');
+                    res.send(500);
+                }
+            }
+        );
 });
 
 //port listening
