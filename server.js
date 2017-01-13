@@ -108,6 +108,10 @@ app.get('/admin', function (request, response) {
     }
 });
 
+app.get('/forms', function(req, res) {
+    res.render('pages/forms');
+});
+
 app.get('/accounts-list', function (request, response) {
     if (isAuthed(request)) {
         mongoose.model('Account').find()
