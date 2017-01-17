@@ -450,10 +450,10 @@ app.get('/event/:id', function(req, res) {
                     url: result.url,
                     closed: result.closed,
                     ticketCategories: result.ticketCategories,
-                    startDate : moment(result.startDate).format('LT'),
-                    startDay : moment(result.startDate).format('LL'),
-                    endDate : moment(result.endDate).format('LT'),
-                    endDay : moment(result.endDate).format('LL')
+                    startDate : moment(result.startDate).local().format('LT'),
+                    startDay : moment(result.startDate).local().format('LL'),
+                    endDate : moment(result.endDate).local().format('LT'),
+                    endDay : moment(result.endDate).local().format('LL')
                 },
                 stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY,
                 curDate: moment().format('llll')
