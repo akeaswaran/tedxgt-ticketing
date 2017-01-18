@@ -422,7 +422,7 @@ app.get('/', function (request, response) {
         .then(function(results) {
             response.render('pages/index', {
                 events : results,
-                moment: moment
+                moment: momenttz
             });
         }, function(err) {
             if (err) {
