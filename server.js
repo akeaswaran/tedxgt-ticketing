@@ -487,7 +487,7 @@ app.post('/charge', function(req, res) {
                     //console.log("CHARGE CREATE: " + err);
                     res.send(500, err);
                 } else {
-                    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee, eventId) {
+                    handleChargeResult(res, attendeeData, tcData, function(ticket) {
                         res.send({
                             ticket: ticket,
                             status: 'ok',
@@ -524,7 +524,7 @@ function handleChargeResult(res, attendeeData, tcData, callback) {
                     });
                 }
 
-                callback(ticket, attendee, tcData.event);
+                callback(ticket);
             });
     });
 }
@@ -532,53 +532,46 @@ function handleChargeResult(res, attendeeData, tcData, callback) {
 app.post('/reservation', function(req, res) {
     var tcData = req.body.tcData;
     var attendeeData = req.body.attData;
-    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee, eventId) {
+    handleChargeResult(res, attendeeData, tcData, function(tck) {
         res.send({
-            ticket: ticket,
+            ticket: tck,
             status: 'ok',
             message: 'success'
         });
 
-        //populate ticket data
-        ticket.attendee = attendee;
-        mongoose.model('Event').find()
-            .where('_id', eventId)
-            .sort('name')
-            .then(
-                function(docs) {
-                    ticket.event = docs[0];
+        Ticket.find({ _id: tck._id })
+            .populate('attendee')
+            .populate('ticketCategory')
+            .populate('event')
+            .limit(1)
+            .then(function(ticketResults) {
+                var regTemplate = new EmailTemplate(path.join(templatesDir, 'reservation-confirmation'));
+                var ticket = ticketResults[0];
+                regTemplate.render({
+                    ticket: ticket,
+                    moment: moment
+                }, function(err, results) {
+                    if (err) {
+                        return handleError(err, 'warn');
+                    }
 
-                    //send email confirmation
-                    var regTemplate = new EmailTemplate(path.join(templatesDir, 'reservation-confirmation'));
-
-                    regTemplate.render({
-                        ticket: ticket,
-                        moment: moment
-                    }, function(err, results) {
+                    transport.sendMail({
+                        from: 'TEDxGeorgiaTech <tedxgeorgiatech@gmail.com>',
+                        to: ticket.attendee.email,
+                        subject: 'Confirmation for Order ' + ticket._id,
+                        html: results.html
+                    }, function (err, responseStatus) {
                         if (err) {
                             return handleError(err, 'warn');
+                        } else {
+                            return handleError(responseStatus.message, 'info');
                         }
-
-                        transport.sendMail({
-                            from: 'TEDxGeorgiaTech <tedxgeorgiatech@gmail.com>',
-                            to: attendee.email,
-                            subject: 'Confirmation for Order' + ticket._id,
-                            html: results.html
-                        }, function (err, responseStatus) {
-                            if (err) {
-                                handleError(err, 'warn');
-                            } else {
-                                handleError(responseStatus.message, 'info');
-                            }
-                        });
                     });
-                },
-                function(error) {
-                    if (error) {
-                        handleError(err, 'warn');
-                    }
-                }
-            );
+                });
+            }, function(err) {
+                return handleError(err, 'warn');
+            });
+
     });
 });
 
