@@ -16,7 +16,8 @@ var express = require('express'),
     async = require('async'),
     path = require('path'),
     stripe = require('stripe')(process.env.STRIPE_API_SECRET_KEY),
-    csv = require('express-csv');
+    csv = require('express-csv'),
+    momenttz = require('moment-timezone');
 
 //app setup
 var app = express();
@@ -442,7 +443,7 @@ app.get('/event/:id', function(req, res) {
             res.redirect('/');
         } else {
             res.render('pages/event', {
-                moment: moment,
+                moment: momenttz,
                 event: {
                     _id: result._id,
                     name: result.name,
@@ -451,8 +452,8 @@ app.get('/event/:id', function(req, res) {
                     url: result.url,
                     closed: result.closed,
                     ticketCategories: result.ticketCategories,
-                    startDate: moment(result.startDate),
-                    endDate: moment(result.endDate)
+                    startDate: momenttz(result.startDate, 'America/New_York'),
+                    endDate: momenttz(result.endDate, 'America/New_York')
                 },
                 stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY,
                 curDate: moment().format('llll')
