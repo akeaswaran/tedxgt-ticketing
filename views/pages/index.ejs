@@ -183,7 +183,7 @@
                             <div id="event-id-<%= item._id %>" class="col-md-8 col-md-offset-2 subtext to-animate">
                                 <h2 style="padding-top:30px;"><%= item.name %></h2>
                                 <h3 class='subtext to-animate'><span style="color:#444"> <%= moment(item.startDate).tz('America/New_York').format('LT') + " | " + moment(item.startDate).tz('America/New_York').format('LL') %> </span></h3>
-                                <h3><%= item.location %></h3>
+                                <h3><a href="http://maps.google.com/?q=<%=item.location%>"><%= item.location %></a></h3>
                                 <h3><%- item.description %></h3>
 
                                 <% if (moment().isAfter(item.startDate) || item.closed) { %>
