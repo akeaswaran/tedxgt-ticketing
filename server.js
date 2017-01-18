@@ -442,7 +442,6 @@ app.get('/event/:id', function(req, res) {
             handleError("EVENT GET REQUEST - Could not find event with id " + req.params.id, 'warn');
             res.redirect('/');
         } else {
-            handleError('START DATE: ' + momenttz.tz(result.startDate, 'America/New_York').format(), 'info');
             res.render('pages/event', {
                 moment: momenttz,
                 event: {
