@@ -541,6 +541,7 @@ app.post('/reservation', function(req, res) {
 
         //send email confirmation
         var regTemplate = new EmailTemplate(path.join(templatesDir, 'reservation-confirmation'));
+        ticket.attendee = attendee;
         regTemplate.render({
             ticket: ticket,
             moment: moment
