@@ -626,7 +626,7 @@
 
                                                     <p>Dear <%= ticket.attendee.name %>,<br>
                                                         <br>
-                                                        Thank you for supporting TEDxGeorgia Tech and&nbsp;<a data-ft="{&quot;tn&quot;:&quot;*N&quot;,&quot;type&quot;:104}" href="https://www.facebook.com/hashtag/ideasworthspreading?source=feed_text&amp;story_id=1496045207076709">#ideasworthspreading</a>&nbsp;by purchasing a ticket to <%= ticket.event.name %>. You will receive an confirmation email with your order details shortly.<br>
+                                                        Thank you for supporting TEDxGeorgia Tech and&nbsp;<a data-ft="{&quot;tn&quot;:&quot;*N&quot;,&quot;type&quot;:104}" href="https://www.facebook.com/hashtag/ideasworthspreading?source=feed_text&amp;story_id=1496045207076709">#ideasworthspreading</a>&nbsp;by purchasing a ticket to <%= ticket.event.name %>. Your order details are attached below.&nbsp; Please show this confirmation email to an organizer when you enter the venue.<br>
                                                         <br>
                                                         We hope you enjoy the event and come away with food for thought!<br>
                                                         <br>
@@ -647,7 +647,119 @@
                                     </td>
                                 </tr>
                                 </tbody>
-                            </table>
+                            </table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width:100%;">
+                                <tbody class="mcnDividerBlockOuter">
+                                <tr>
+                                    <td class="mcnDividerBlockInner" style="min-width: 100%; padding: 18px;">
+                                        <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top-width: 2px;border-top-style: solid;border-top-color: #EAEAEA;">
+                                            <tbody><tr>
+                                                <td>
+                                                    <span></span>
+                                                </td>
+                                            </tr>
+                                            </tbody></table>
+                                        <!--
+                                                        <td class="mcnDividerBlockInner" style="padding: 18px;">
+                                                        <hr class="mcnDividerContent" style="border-bottom-color:none; border-left-color:none; border-right-color:none; border-bottom-width:0; border-left-width:0; border-right-width:0; margin-top:0; margin-right:0; margin-bottom:0; margin-left:0;" />
+                                        -->
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
+                                <tbody class="mcnTextBlockOuter">
+                                <tr>
+                                    <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
+                                        <!--[if mso]>
+                                        <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                                            <tr>
+                                        <![endif]-->
+
+                                        <!--[if mso]>
+                                        <td valign="top" width="600" style="width:600px;">
+                                        <![endif]-->
+                                        <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
+                                            <tbody><tr>
+
+                                                <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
+
+                                                    <strong>Order <%= ticket._id %>:</strong><br>
+                                                    Placed on <%= moment(ticket._id.getTimestamp()).format('llll') %>
+                                                    <table cellpadding="0" cellspacing="0" class="invoice-items" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; margin: 0;">
+                                                        <tbody>
+                                                        <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                                                            <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top"><%= ticket.event.name %> Ticket (Section: <%= ticket.ticketCategory.name %>)</td>
+                                                            <td align="right" class="alignright" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">
+                                                                <% if (ticket.ticketCategory.price > 0) { %>
+                                                                $ <%= ticket.ticketCategory.price %>
+                                                                <% } else { %>
+                                                                Free
+                                                                <% } %>
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                                                            <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">&nbsp;</td>
+                                                            <td align="right" class="alignright" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">&nbsp;</td>
+                                                        </tr>
+                                                        <tr class="total" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                                                            <td align="right" class="alignright" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" valign="top" width="80%">Total</td>
+                                                            <td align="right" class="alignright" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" valign="top">
+                                                                <% if (ticket.ticketCategory.price > 0) { %>
+                                                                $ <%= ticket.ticketCategory.price %>
+                                                                <% } else { %>
+                                                                Free
+                                                                <% } %>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                </td>
+                                            </tr>
+                                            </tbody></table>
+                                        <!--[if mso]>
+                                        </td>
+                                        <![endif]-->
+
+                                        <!--[if mso]>
+                                        </tr>
+                                        </table>
+                                        <![endif]-->
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;">
+                                <tbody class="mcnTextBlockOuter">
+                                <tr>
+                                    <td valign="top" class="mcnTextBlockInner" style="padding-top:9px;">
+                                        <!--[if mso]>
+                                        <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                                            <tr>
+                                        <![endif]-->
+
+                                        <!--[if mso]>
+                                        <td valign="top" width="600" style="width:600px;">
+                                        <![endif]-->
+                                        <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%; min-width:100%;" width="100%" class="mcnTextContentContainer">
+                                            <tbody><tr>
+
+                                                <td valign="top" class="mcnTextContent" style="padding-top:0; padding-right:18px; padding-bottom:9px; padding-left:18px;">
+
+
+                                                </td>
+                                            </tr>
+                                            </tbody></table>
+                                        <!--[if mso]>
+                                        </td>
+                                        <![endif]-->
+
+                                        <!--[if mso]>
+                                        </tr>
+                                        </table>
+                                        <![endif]-->
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table></td>
                     </tr>
                     <tr>
                         <td valign="top" id="templateFooter"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnFollowBlock" style="min-width:100%;">

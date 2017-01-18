@@ -28,8 +28,6 @@ TicketSchema.post('save', function(next) {
                 console.log("TICKETCATEGORY UPDATE ERR: " + err);
             }
 
-            console.log("UPDATED TC: " + model);
-
             mongoose.model('Event').findByIdAndUpdate(
                 model.event,
                 { $push: { attendees: ticket.attendee } },
@@ -38,7 +36,6 @@ TicketSchema.post('save', function(next) {
                         console.log("EVENT UPDATE ERR: " + err);
                     }
 
-                    console.log("UPDATED EVENT: " + doc);
                     return next;
                 });
         }

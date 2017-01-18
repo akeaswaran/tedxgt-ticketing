@@ -466,42 +466,41 @@ app.post('/charge', function(req, res) {
     var stripeToken = req.body.token;
     var tcData = req.body.tcData;
     var attendeeData = req.body.attData;
-    console.log('TCDATA: ' + JSON.stringify(tcData, null, '\t'));
+    //console.log('TCDATA: ' + JSON.stringify(tcData, null, '\t'));
 
     mongoose.model('Event').findOne({ _id: tcData.event }, function(err, event) {
         if (err) {
             console.log("EVENT FIND: " + err);
             return res.send(500, { error: err });
         }
-        console.log('TOKEN: ' + JSON.stringify(stripeToken, null, '\t'));
 
-        // do not create a charge for a free ticket
-        if ((stripeToken !== '' && stripeToken.hasOwnProperty('id')) && (tcData.price !== 0 && tcData.price !== '0'
-            && tcData.price !== '0.00' && tcData.price !== 0.00)) {
-            stripe.charges.create({
-                    source: stripeToken.id,
-                    currency: 'usd',
-                    amount: (tcData.price * 100), //converting to cents
-                    description: "Ticket for " + tcData.name  + " section in event " + event.name,
-                    receipt_email: attendeeData.email,
-                    statement_descriptor: 'TEDxGT Event Ticket'
-                },
-                function(err, charge) {
-                    if (err) {
-                        console.log("CHARGE CREATE: " + err);
-                        res.send(500, err);
-                    } else {
-                        handleChargeResult(res, attendeeData, tcData);
-                    }
+        stripe.charges.create({
+                source: stripeToken.id,
+                currency: 'usd',
+                amount: (tcData.price * 100), //converting to cents
+                description: "Ticket for " + tcData.name  + " section in event " + event.name,
+                receipt_email: attendeeData.email,
+                statement_descriptor: 'TEDxGT Event Ticket'
+            },
+            function(err, charge) {
+                if (err) {
+                    //console.log("CHARGE CREATE: " + err);
+                    res.send(500, err);
+                } else {
+                    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee) {
+                        res.send({
+                            ticket: ticket,
+                            status: 'ok',
+                            message: 'success'
+                        });
+                    });
                 }
-            );
-        } else {
-            handleChargeResult(res, attendeeData, tcData);
-        }
+            }
+        );
     });
 });
 
-function handleChargeResult(res, attendeeData, tcData) {
+function handleChargeResult(res, attendeeData, tcData, callback) {
     //create attendee
     Attendee.create(attendeeData, function (err, attendee) {
         if (err) {
@@ -525,14 +524,46 @@ function handleChargeResult(res, attendeeData, tcData) {
                     });
                 }
 
-                res.send({
-                    ticket: ticket,
-                    status: 'ok',
-                    message: 'success'
-                });
+                callback(ticket, attendee);
             });
     });
 }
+
+app.post('/reservation', function(req, res) {
+    var tcData = req.body.tcData;
+    var attendeeData = req.body.attData;
+    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee) {
+        res.send({
+            ticket: ticket,
+            status: 'ok',
+            message: 'success'
+        });
+
+        //send email confirmation
+        var regTemplate = new EmailTemplate(path.join(templatesDir, 'reservation-confirmation'));
+        regTemplate.render({
+            ticket: ticket,
+            moment: moment
+        }, function(err, results) {
+            if (err) {
+                return handleError(err, 'warn');
+            }
+
+            transport.sendMail({
+                from: 'TEDxGeorgiaTech <tedxgeorgiatech@gmail.com>',
+                to: attendee.email,
+                subject: 'Confirmation for Order' + ticket._id,
+                html: results.html
+            }, function (err, responseStatus) {
+                if (err) {
+                    handleError(err, 'warn');
+                } else {
+                    handleError(responseStatus.message, 'info');
+                }
+            });
+        });
+    });
+});
 
 app.get('/confirmation/:tId', function(req, res) {
    var ticketId = req.params.tId;
