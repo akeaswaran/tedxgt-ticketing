@@ -442,6 +442,7 @@ app.get('/event/:id', function(req, res) {
             res.redirect('/');
         } else {
             res.render('pages/event', {
+                moment: moment,
                 event: {
                     _id: result._id,
                     name: result.name,
@@ -450,10 +451,8 @@ app.get('/event/:id', function(req, res) {
                     url: result.url,
                     closed: result.closed,
                     ticketCategories: result.ticketCategories,
-                    startDate : moment(result.startDate).local().format('LT'),
-                    startDay : moment(result.startDate).local().format('LL'),
-                    endDate : moment(result.endDate).local().format('LT'),
-                    endDay : moment(result.endDate).local().format('LL')
+                    startDate: moment(result.startDate),
+                    endDate: moment(result.endDate)
                 },
                 stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY,
                 curDate: moment().format('llll')

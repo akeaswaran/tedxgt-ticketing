@@ -83,10 +83,16 @@
     <div class="row">
         <div class="col-md-12 faux-section-heading text-center">
             <h1><%= event.name %></h1>
-            <% if (event.startDay === event.endDay) { %>
-            <h3><%= event.startDate %> - <%= event.endDate %> | <%= event.startDay %></h3>
+            <!--startDate : moment(result.startDate).local().format('LT'),-->
+            <!--startDay : moment(result.startDate).local().format('LL'),-->
+            <!--endDate : moment(result.endDate).local().format('LT'),-->
+            <!--endDay : moment(result.endDate).local().format('LL')-->
+            <% var startDay = moment(event.startDate).local().format('LL'); %>
+            <% var endDay = moment(event.endDate).local().format('LL'); %>
+            <% if (startDay === endDay) { %>
+            <h3><%= event.startDate.local().format('LT') %> - <%= event.endDate.local().format('LT') %> | <%= startDay %></h3>
             <% } else { %>
-            <h3><%= event.startDate %> <%= event.startDay %> - <%= event.endDate %> <%= event.endDay %></h3>
+            <h3><%= event.startDate.local().format('LT') %> <%= startDay %> - <%= event.endDate.local().format('LT') %> <%= endDay %></h3>
             <% }%>
             <h4><a href="http://maps.google.com/?q=<%=event.location%>"><%= event.location %></a></h4>
             <h4><a href="<%= event.url %>"><%= event.url %></a></h4>
