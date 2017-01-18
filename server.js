@@ -442,7 +442,7 @@ app.get('/event/:id', function(req, res) {
             handleError("EVENT GET REQUEST - Could not find event with id " + req.params.id, 'warn');
             res.redirect('/');
         } else {
-            handleError('START DATE: ' + momenttz(result.startDate, 'America/New_York').format(), 'info');
+            handleError('START DATE: ' + momenttz.tz(result.startDate, 'America/New_York').format(), 'info');
             res.render('pages/event', {
                 moment: momenttz,
                 event: {
@@ -453,8 +453,8 @@ app.get('/event/:id', function(req, res) {
                     url: result.url,
                     closed: result.closed,
                     ticketCategories: result.ticketCategories,
-                    startDate: momenttz(result.startDate, 'America/New_York'),
-                    endDate: momenttz(result.endDate, 'America/New_York')
+                    startDate: momenttz.tz(result.startDate, 'America/New_York'),
+                    endDate: momenttz.tz(result.endDate, 'America/New_York')
                 },
                 stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY,
                 curDate: moment().format('llll')
