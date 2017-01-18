@@ -67,11 +67,6 @@
                         <p class="help-block">Where will your event be? <b>Note</b>: This will be used by Google Maps to help attendees get to your event, so make sure it is a valid address.</p>
                     </div>
                     <div class="form-group">
-                        <label for="event-url" class="control-label">URL</label>
-                        <input type="text" class="form-control" id="event-url" required>
-                        <p class="help-block">Where else can I find the event online?</p>
-                    </div>
-                    <div class="form-group">
                         <label for="event-start-date" class="control-label">Start Date</label>
                         <div class='input-group date' id='event-start-date' required>
                             <input type='text' class="form-control" />
@@ -133,11 +128,6 @@
                         <label for="edit-event-location" class="control-label">Location</label>
                         <input class="form-control" id="edit-event-location" required>
                         <p class="help-block">Where will your event be? <b>Note</b>: This will be used by Google Maps to help attendees get to your event, so make sure it is a valid address.</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-event-url" class="control-label">URL</label>
-                        <input type="text" class="form-control" id="edit-event-url" required>
-                        <p class="help-block">Where else can I find the event online?</p>
                     </div>
                     <div class="form-group">
                         <label for="edit-event-start-date" class="control-label">Start Date</label>
@@ -442,7 +432,6 @@
             && $('#event-name').val() !== null
             && tinymce.get('event-description').getContent() !== null
             && $('#event-location').val() !== null
-            && $('#event-url').val() !== null
             && $('#event-start-date').data("DateTimePicker").date() !== null
             && $('#event-end-date').data("DateTimePicker").date() !== null
             && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
@@ -450,7 +439,6 @@
             var eventName = $('#event-name').val();
             var eventDescription = tinymce.get('event-description').getContent();
             var eventLocation = $('#event-location').val();
-            var eventUrl = $('#event-url').val();
             var startDate = $('#event-start-date').data("DateTimePicker").date();
             var endDate = $('#event-end-date').data("DateTimePicker").date();
 
@@ -458,7 +446,7 @@
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "url" : eventUrl,
+                "url" : '',
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "closed" : false,
@@ -530,7 +518,6 @@
             && $('#event-name').val() !== null
             && tinymce.get('event-description').getContent() !== null
             && $('#event-location').val() !== null
-            && $('#event-url').val() !== null
             && $('#event-start-date').data("DateTimePicker").date() !== null
             && $('#event-end-date').data("DateTimePicker").date() !== null
             && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
@@ -538,7 +525,6 @@
             var eventName = $('#event-name').val();
             var eventDescription = tinymce.get('event-description').getContent();
             var eventLocation = $('#event-location').val();
-            var eventUrl = $('#event-url').val();
             var startDate = $('#event-start-date').data("DateTimePicker").date();
             var endDate = $('#event-end-date').data("DateTimePicker").date();
 
@@ -546,7 +532,7 @@
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "url" : eventUrl,
+                "url" : '',
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "closed" : false,
@@ -618,7 +604,6 @@
         $('#edit-event-name').val(event.name);
         tinymce.get('edit-event-description').setContent(event.description);
         $('#edit-event-location').val(event.location);
-        $('#edit-event-url').val(event.url);
         $('#edit-close-event-box').val(event.closed);
         $('#edit-event-start-date').data("DateTimePicker").date(moment(event.startDate));
         $('#edit-event-end-date').data("DateTimePicker").date(moment(event.endDate));
@@ -759,25 +744,22 @@
             && $('#edit-event-name').val() !== null
             && tinymce.get('edit-event-description').getContent() !== null
             && $('#edit-event-location').val() !== null
-            && $('#edit-event-url').val() !== null
             && $('#edit-event-start-date').data("DateTimePicker").date() !== null
             && $('#edit-event-end-date').data("DateTimePicker").date() !== null
             && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
         ) {
             var eventName = $('#edit-event-name').val();
             var eventDescription = tinymce.get('edit-event-description').getContent();
-            console.log('EVENT DESCRIPTION STR: ' + eventDescription);
             var eventLocation = $('#edit-event-location').val();
-            var eventUrl = $('#edit-event-url').val();
             var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
             var endDate = $('#edit-event-end-date').data("DateTimePicker").date();
-            var closedStatus = $('#edit-close-event-box').val();
+            var closedStatus = $('#edit-close-event-box').is(":checked");
 
             var postData = {
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "url" : eventUrl,
+                "url" : '',
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "live" : true,
@@ -856,7 +838,6 @@
             && $('#edit-event-name').val() !== null
             && tinymce.get('edit-event-description').getContent() !== null
             && $('#edit-event-location').val() !== null
-            && $('#edit-event-url').val() !== null
             && $('#edit-event-start-date').data("DateTimePicker").date() !== null
             && $('#edit-event-end-date').data("DateTimePicker").date() !== null
             && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
@@ -864,16 +845,15 @@
             var eventName = $('#edit-event-name').val();
             var eventDescription = tinymce.get('edit-event-description').getContent();
             var eventLocation = $('#edit-event-location').val();
-            var eventUrl = $('#edit-event-url').val();
             var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
             var endDate = $('#edit-event-end-date').data("DateTimePicker").date();
-            var closedStatus = $('#edit-close-event-box').val();
+            var closedStatus = $('#edit-close-event-box').is(":checked");
 
             var postData = {
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "url" : eventUrl,
+                "url" : '',
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "live" : false,

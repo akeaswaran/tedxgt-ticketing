@@ -95,7 +95,6 @@
             <h3><%= event.startDate.format('LT') %> <%= moment.tz.zone('America/New_York').abbr(event.startDate) %> <%= startDay %> - <%= event.endDate.format('LT') %> <%= moment.tz.zone('America/New_York').abbr(event.endDate) %> <%= endDay %></h3>
             <% }%>
             <h4><a href="http://maps.google.com/?q=<%=event.location%>"><%= event.location %></a></h4>
-            <h4><a href="<%= event.url %>"><%= event.url %></a></h4>
         </div>
     </div>
     <div class="row">
@@ -132,7 +131,6 @@
             </div>
         </div>
     </div>
-    <% } %>
     <div class="row">
         <div class="col-md-12 faux-section-heading text-center">
             <h2>SHARE</h2>
@@ -144,6 +142,13 @@
             </ul>
         </div>
     </div>
+    <% } else { %>
+    <div class="row">
+        <div class="col-md-12 faux-section-heading text-center">
+            <h3>Ticket sales are now closed. Thank your for your interest!</h3>
+        </div>
+    </div>
+    <% } %>
 </div>
 
 <footer id="footer">
