@@ -487,7 +487,7 @@ app.post('/charge', function(req, res) {
                     //console.log("CHARGE CREATE: " + err);
                     res.send(500, err);
                 } else {
-                    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee) {
+                    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee, eventId) {
                         res.send({
                             ticket: ticket,
                             status: 'ok',
@@ -524,7 +524,7 @@ function handleChargeResult(res, attendeeData, tcData, callback) {
                     });
                 }
 
-                callback(ticket, attendee);
+                callback(ticket, attendee, tcData.event);
             });
     });
 }
@@ -532,37 +532,53 @@ function handleChargeResult(res, attendeeData, tcData, callback) {
 app.post('/reservation', function(req, res) {
     var tcData = req.body.tcData;
     var attendeeData = req.body.attData;
-    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee) {
+    handleChargeResult(res, attendeeData, tcData, function(ticket, attendee, eventId) {
         res.send({
             ticket: ticket,
             status: 'ok',
             message: 'success'
         });
 
-        //send email confirmation
-        var regTemplate = new EmailTemplate(path.join(templatesDir, 'reservation-confirmation'));
+        //populate ticket data
         ticket.attendee = attendee;
-        regTemplate.render({
-            ticket: ticket,
-            moment: moment
-        }, function(err, results) {
-            if (err) {
-                return handleError(err, 'warn');
-            }
+        mongoose.model('Event').find()
+            .where('_id', eventId)
+            .sort('name')
+            .then(
+                function(docs) {
+                    ticket.event = docs[0];
 
-            transport.sendMail({
-                from: 'TEDxGeorgiaTech <tedxgeorgiatech@gmail.com>',
-                to: attendee.email,
-                subject: 'Confirmation for Order' + ticket._id,
-                html: results.html
-            }, function (err, responseStatus) {
-                if (err) {
-                    handleError(err, 'warn');
-                } else {
-                    handleError(responseStatus.message, 'info');
+                    //send email confirmation
+                    var regTemplate = new EmailTemplate(path.join(templatesDir, 'reservation-confirmation'));
+
+                    regTemplate.render({
+                        ticket: ticket,
+                        moment: moment
+                    }, function(err, results) {
+                        if (err) {
+                            return handleError(err, 'warn');
+                        }
+
+                        transport.sendMail({
+                            from: 'TEDxGeorgiaTech <tedxgeorgiatech@gmail.com>',
+                            to: attendee.email,
+                            subject: 'Confirmation for Order' + ticket._id,
+                            html: results.html
+                        }, function (err, responseStatus) {
+                            if (err) {
+                                handleError(err, 'warn');
+                            } else {
+                                handleError(responseStatus.message, 'info');
+                            }
+                        });
+                    });
+                },
+                function(error) {
+                    if (error) {
+                        handleError(err, 'warn');
+                    }
                 }
-            });
-        });
+            );
     });
 });
 
