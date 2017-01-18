@@ -112,7 +112,7 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2 subtext">
                     <table class="table">
-                        <caption>Available as of <%= curDate %>.</caption>
+                        <caption>Available as of <%= moment().tz('America/New_York').format('llll') %>.</caption>
                         <tbody>
                             <% event.ticketCategories.forEach(function(ticketCategory, idx, array) { %>
                                 <tr>

@@ -604,7 +604,7 @@
         $('#edit-event-name').val(event.name);
         tinymce.get('edit-event-description').setContent(event.description);
         $('#edit-event-location').val(event.location);
-        $('#edit-close-event-box').val(event.closed);
+        $('#edit-close-event-box').prop('checked', event.closed);
         $('#edit-event-start-date').data("DateTimePicker").date(moment(event.startDate));
         $('#edit-event-end-date').data("DateTimePicker").date(moment(event.endDate));
 

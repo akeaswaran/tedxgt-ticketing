@@ -455,8 +455,7 @@ app.get('/event/:id', function(req, res) {
                     startDate: momenttz.tz(result.startDate, 'America/New_York'),
                     endDate: momenttz.tz(result.endDate, 'America/New_York')
                 },
-                stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY,
-                curDate: moment().format('llll')
+                stripePublicKey: process.env.STRIPE_API_PUBLIC_KEY
             });
         }
     });
