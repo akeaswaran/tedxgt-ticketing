@@ -549,7 +549,7 @@ app.post('/reservation', function(req, res) {
                 var ticket = ticketResults[0];
                 regTemplate.render({
                     ticket: ticket,
-                    moment: moment
+                    moment: momenttz
                 }, function(err, results) {
                     if (err) {
                         return handleError(err, 'warn');

@@ -60,7 +60,7 @@
                     <tr>
                         <td><%= moment(ticket._id.getTimestamp()).format('lll') %></td>
                         <td><%= ticket.attendee.name %></td>
-                        <td><a href="mailto:<%= attendee.email %>"><%= attendee.email %></a></td>
+                        <td><a href="mailto:<%= ticket.attendee.email %>"><%= ticket.attendee.email %></a></td>
                     </tr>
                     <%});%>
                     </tbody>
