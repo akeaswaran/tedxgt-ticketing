@@ -115,15 +115,23 @@
                         <caption>Available as of <%= moment().tz('America/New_York').format('llll') %>.</caption>
                         <tbody>
                             <% event.ticketCategories.forEach(function(ticketCategory, idx, array) { %>
-                                <tr>
-                                    <th><%= ticketCategory.name %> (<%= ticketCategory.numTickets - ticketCategory.numTicketsSold %> left)</th>
-                                    <td align="center"><%= ticketCategory.description %></td>
-                                    <% if (ticketCategory.price > 0) { %>
-                                    <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy ($<%= ticketCategory.price %>)</button></td>
+                                    <% if (ticketCategory.numTickets - ticketCategory.numTicketsSold > 0) {%>
+                                        <tr>
+                                            <th><%= ticketCategory.name %> (<%= ticketCategory.numTickets - ticketCategory.numTicketsSold %> left)</th>
+                                            <td align="center"><%= ticketCategory.description %></td>
+                                            <% if (ticketCategory.price > 0) { %>
+                                            <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy ($<%= ticketCategory.price %>)</button></td>
+                                            <% } else { %>
+                                            <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Reserve</button></td>
+                                            <% } %>
+                                        </tr>
                                     <% } else { %>
-                                    <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Reserve</button></td>
+                                        <tr>
+                                            <th><%= ticketCategory.name %></th>
+                                            <td align="center"><%= ticketCategory.description %></td>
+                                            <td align="right">SOLD OUT</td>
+                                        </tr>
                                     <% } %>
-                                </tr>
                             <%  }); %>
                         </tbody>
                     </table>
