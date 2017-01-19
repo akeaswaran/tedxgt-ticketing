@@ -33,7 +33,7 @@ exports.addMany = function(req, res) {
                 idArr.push(tc._id);
             });
 
-            Event.findOneAndUpdate({ _id : req.body.eventId }, { ticketCategories: idArr }, function(err, person) {
+            Event.findOneAndUpdate({ _id : req.body.eventId }, { ticketCategories: idArr }, function(err, doc) {
                 if (err) {
                     return console.log(err);
                 }
@@ -47,44 +47,48 @@ exports.addMany = function(req, res) {
 };
 
 exports.updateMany = function(req, res) {
-    var eventId = req.body.eventId;
+    //console.log('TC BODY REQ: ' + JSON.stringify(req.body,null,'\t'));
+    var dirtyUpdates = req.body.tcUpdates;
+    var tcIds = [];
+    var tcUpdates = [];
+    dirtyUpdates.forEach(function (update) {
+       tcIds.push(update._id);
+       delete update._id;
+        tcUpdates.push(update);
+    });
 
-    //0: clear TCs from event
-    Event.findOneAndUpdate(
-        { _id: eventId},
-        { ticketCategories: [] },
-        { new: true },
-        function (err, result) {
-            if (err) {
-                console.log("EVENT remove TCs: " + err);
-                res.send(400);
+    if ((tcIds instanceof Array) && (tcUpdates instanceof Array)) {
+        tcIds.forEach(function(id, idx, array) {
+            if (id === 'NEW ITEM') {
+                TicketCategory.create(tcUpdates[idx], function (err, category) {
+                    if (err) return console.log(err);
+                    //console.log('Created TC ' + category);
+                });
+            } else {
+                TicketCategory.update({ "_id": id }, { "$set": tcUpdates[idx] }, { upsert: true }, function (err, raw) {
+                    if (err) return console.log('TC UPDATE ERROR: ' + err);
+                    console.log('Updated ' + raw.nModified + ' tc');
+                });
             }
+        });
 
-            //1: delete TC records for event
-            TicketCategory.remove({ event: eventId }, function(err) {
-                if (err) {
-                    console.log("TC delete: " + err);
-                    res.send(400);
-                }
-
-                //2: create new TCs from post data
-                //3: attached new TCs to event
-                exports.addMany(req, res);
-            });
-        }
-    );
+        return res.send(202);
+    } else {
+        console.log('INVALID REQ DATA');
+        return res.send(422);
+    }
 };
 
 exports.update = function(req, res) {
     var id = req.params.id;
-    console.log('Received tc id: ' + id);
     var updates = req.body;
+
     TicketCategory.update({ _id: id }, updates, function (err, raw) {
         if (err) return console.log('ERROR: ' + err);
         console.log('Updated ' + raw.nModified + ' tcs');
         return res.send(202);
     });
-}
+};
 
 exports.delete = function(req, res) {
     var id = req.params.id;

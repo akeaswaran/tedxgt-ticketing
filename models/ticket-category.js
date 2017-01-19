@@ -29,6 +29,20 @@ TicketCategorySchema.pre('remove', function(next) {
     );
 });
 
+TicketCategorySchema.post('save', function(next) {
+    mongoose.model('Event').findByIdAndUpdate(
+        this.event,
+        { $push: { ticketCategories: this.id } },
+        { new : true },
+        function(err, doc) {
+            if (err) {
+                console.log("EVENT UPDATE ERR: " + err);
+            }
+
+            return next;
+        });
+});
+
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 TicketCategorySchema.plugin(deepPopulate, {
     whitelist: [

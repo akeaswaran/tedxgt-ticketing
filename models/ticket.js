@@ -42,4 +42,8 @@ TicketSchema.post('save', function(next) {
     );
 });
 
+TicketSchema.pre('remove', function (next) {
+    mongoose.model('Attendee').remove({ _id: this.attendee }, next);
+});
+
 mongoose.model('Ticket', TicketSchema);

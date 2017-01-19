@@ -197,44 +197,7 @@
 </div>
 <!-- /.row -->
 <div class="row">
-    <div class="col-lg-4 col-md-6">
-        <div class="panel panel-red">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fa fa-ticket fa-5x"></i>
-                    </div>
-                    <div class="col-xs-9 text-right">
-                        <% var sumTicketsSold = 0;%>
-                        <% events.forEach(function(event) { %>
-                            <% event.ticketCategories.forEach(function (ticketCategory) { %>
-                                <% if (ticketCategory !== null) { %>
-                                    <% sumTicketsSold += ticketCategory.numTicketsSold; %>
-                                <% } %>
-                            <% }); %>
-                        <% }); %>
-                        <% if (isNaN(sumTicketsSold)) {%>
-                            <% sumTicketsSold = 0;%>
-                        <% } %>
-                        <div class="huge"><%= sumTicketsSold %></div>
-                        <% if (sumTicketsSold > 1 || sumTicketsSold == 0) { %>
-                            <div>Tickets Sold</div>
-                        <% } else { %>
-                            <div>Ticket Sold</div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-            <a href="/tickets-list">
-                <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                    <div class="clearfix"></div>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-6 col-md-6">
         <div class="panel panel-red">
             <div class="panel-heading">
                 <div class="row">
@@ -264,7 +227,7 @@
             </a>
         </div>
     </div>
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-6 col-md-6">
         <div class="panel panel-red">
             <div class="panel-heading">
                 <div class="row">
@@ -327,7 +290,7 @@
                     <%});%>
                     <td>
                         <% if (event.attendees.length > 0) { %>
-                            <% if (sumTicketsSold > 0) { %>
+                            <% if (sumTickets > 0) { %>
                                 <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
                             <% } else { %>
                                 <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
@@ -671,7 +634,7 @@
                 tcId: tc._id,
                 index: index
             }
-            html += "<div class=\"panel panel-default\" id=\"tc-panel-" + index + "\">";
+            html += "<div class=\"panel panel-default\" data-tc=\"" + itemDict.tcId + "\" id=\"tc-panel-" + index + "\">";
             html += "<div class=\"panel-heading\" role=\"tab\" id=\"heading" + index + "\">";
             html += "<h4 class=\"panel-title\">";
             html += "<a class=\"collapsed\" role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + index + "\" aria-expanded=\"false\" aria-controls=\"collapse" + index + "\">Ticket Category " + index + "</a>";
@@ -690,7 +653,7 @@
             html += "</div>";
             html += "</div>";
         } else {
-            html += "<div class=\"panel panel-default\" id=\"tc-panel-" + index + "\">";
+            html += "<div class=\"panel panel-default\" data-tc=\"NEW ITEM\" id=\"tc-panel-" + index + "\">";
             html += "<div class=\"panel-heading\" role=\"tab\" id=\"heading" + index + "\">";
             html += "<h4 class=\"panel-title\">";
             html += "<a class=\"collapsed\" role=\"button\" data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapse" + index + "\" aria-expanded=\"false\" aria-controls=\"collapse" + index + "\">Ticket Category " + index + "</a>";
@@ -766,21 +729,16 @@
                 "closed" : closedStatus
             }
 
-            var tcData = [];
+            var tcUpdates = [];
             for (var i = 1; i <= $('#edit-accordion').children('.panel').length; i++) {
-                tcData.push({
+                tcUpdates.push({
+                    _id: $('#tc-panel-' + i).data('tc'),
                     name: $('#tc-name-' + i).val(),
                     description: $('#tc-description-' + i).val(),
                     price: $('#tc-price-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
-                    numTicketsSold: 0,
-                    tickets: [],
                     event: $('#edit-save-event').data('event-id')
                 });
-            }
-            var putDict = {
-                tcArr: tcData,
-                eventId: $('#edit-save-event').data('event-id')
             }
 
             $.ajax({
@@ -796,7 +754,9 @@
                     $.ajax({
                         url: '/ticket-categories',
                         method: 'PUT',
-                        data: putDict,
+                        data: {
+                            tcUpdates: tcUpdates
+                        },
                         success: function (data) {
                             if (data) {
                                 console.log('TCS: ' + JSON.stringify(data));
@@ -860,21 +820,16 @@
                 "closed" : closedStatus
             }
 
-            var tcData = [];
+            var tcUpdates = [];
             for (var i = 1; i <= $('#edit-accordion').children('.panel').length; i++) {
-                tcData.push({
+                tcUpdates.push({
+                    _id: $('#tc-panel-' + i).data('tc'),
                     name: $('#tc-name-' + i).val(),
                     description: $('#tc-description-' + i).val(),
                     price: $('#tc-price-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
-                    numTicketsSold: 0,
-                    tickets: [],
                     event: $('#edit-save-event').data('event-id')
                 });
-            }
-            var putDict = {
-                tcArr: tcData,
-                eventId: $('#edit-save-event').data('event-id')
             }
 
             $.ajax({
@@ -890,7 +845,9 @@
                     $.ajax({
                         url: '/ticket-categories',
                         method: 'PUT',
-                        data: putDict,
+                        data: {
+                            tcUpdates: tcUpdates
+                        },
                         success: function (data) {
                             if (data) {
                                 console.log('TCS: ' + JSON.stringify(data));
