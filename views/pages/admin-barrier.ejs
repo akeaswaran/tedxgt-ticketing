@@ -113,7 +113,7 @@
             name: $('#inputName').val(),
             email: $('#inputEmail').val(),
             password: $('#inputPassword').val(),
-            username: $('#inputUsername').val()
+            username: $('#inputUsername').val().toLocaleLowerCase()
         };
         console.log("POSTED DATA: " + postingData);
         $.post("/requestAccount", postingData, function(data) {

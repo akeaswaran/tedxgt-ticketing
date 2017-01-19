@@ -231,7 +231,7 @@
         var tcIdx = $('#buy-event-ticket-button').data('idx');
         var tcs = <%- JSON.stringify(event.ticketCategories) %>;
         var tcData = tcs[tcIdx];
-        var attData =  { name: $('#charge-name').val(), email: $('#charge-email').val() };
+        var attData =  { name: $('#charge-name').val(), email: $('#charge-email').val().toLocaleLowerCase() };
 
         if (tcData.price !== 0 && tcData.price !== '0' && tcData.price !== '0.00' && tcData.price !== 0.00) {
             var handler = createCheckoutHandler(tcData, attData);
