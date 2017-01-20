@@ -188,57 +188,6 @@ app.get('/admin/event/:id/attendees', function(req, res) {
     }
 });
 
-app.get('/admin/event/:id/tickets', function (req, res) {
-    if (isAuthed(req)) {
-        mongoose.model('Event').find()
-            .where('_id', req.params.id)
-            .populate('ticketCategories')
-            .deepPopulate('ticketCategories.tickets ticketCategories.tickets.attendee')
-            .sort('name')
-            .then(
-                function(docs) {
-                    res.render('pages/tickets', {
-                        event: docs[0],
-                        moment: moment
-                    });
-                },
-                function(error) {
-                    if (error) {
-                        handleError(err, 'warn');
-                        res.send(500);
-                    }
-                }
-            );
-    } else {
-        res.redirect('/admin');
-    }
-});
-
-app.get('/tickets-list', function(req, res) {
-    if (isAuthed(req)) {
-        mongoose.model('Event').find()
-            .populate('ticketCategories')
-            .deepPopulate('ticketCategories.tickets ticketCategories.tickets.attendee')
-            .sort('name')
-            .then(
-                function(docs) {
-                    res.render('pages/tickets-list', {
-                        events: docs,
-                        moment: moment
-                    });
-                },
-                function(error) {
-                    if (error) {
-                        handleError(err, 'warn');
-                        res.send(500);
-                    }
-                }
-            );
-    } else {
-        res.redirect('/admin');
-    }
-});
-
 app.get('/adminPortal', function (request, response) {
     if (isAuthed(request)) {
         Event.findAll(request, response, function(err, results) {

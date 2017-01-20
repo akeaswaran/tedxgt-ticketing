@@ -290,17 +290,9 @@
                     <%});%>
                     <td>
                         <% if (event.attendees.length > 0) { %>
-                            <% if (sumTickets > 0) { %>
-                                <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
-                            <% } else { %>
-                                <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
-                            <% } %>
+                            <a href="/admin/event/<%= event._id %>/attendees"><%= event.attendees.length %></a> / <%= sumTickets %>
                         <% } else { %>
-                            <% if (sumTickets > 0) { %>
-                                <%= event.attendees.length %> / <a href="/admin/event/<%= event._id %>/tickets"><%= sumTickets %></a>
-                            <% } else { %>
-                                <%= event.attendees.length %> / <%= sumTickets %>
-                            <% } %>
+                            <%= event.attendees.length %> / <%= sumTickets %>
                         <% }%>
                     </td>
                     <td>
