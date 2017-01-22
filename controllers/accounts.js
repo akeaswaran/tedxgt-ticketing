@@ -16,9 +16,9 @@ exports.findById = function(req, res, callback) {
 };
 
 exports.add = function(req, res) {
-    Account.create(req.body, function (err, event) {
+    Account.create(req.body, function (err, account) {
         if (err) return console.log(err);
-        return res.send(event);
+        return res.send(account);
     });
 };
 

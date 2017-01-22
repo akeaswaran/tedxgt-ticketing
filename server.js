@@ -17,7 +17,8 @@ var express = require('express'),
     path = require('path'),
     stripe = require('stripe')(process.env.STRIPE_API_SECRET_KEY),
     csv = require('express-csv'),
-    momenttz = require('moment-timezone');
+    momenttz = require('moment-timezone'),
+    sa = require('superagent');
 
 //app setup
 var app = express();
@@ -253,6 +254,22 @@ app.post('/requestAccount', function(req, res) {
                 res.send(200);
             });
         });
+
+        if (process.env.ENVIRONMENT === 'prod') {
+            var accUpdate = "New account request for " + account.name + " (@" + account.username + ", \<mailto:" + account.email + "|" + account.email + ">)! \<https://tedxgeorgiatech.com/accountRequests|View all requests\>";
+            sa.post(process.env.SLACK_WEBHOOK_URL)
+                .send({
+                    "text": accUpdate,
+                    "username": "tedxbot",
+                    "icon_emoji": ":x:",
+                    "channel": "@akeaswaran"
+                })
+                .end(function(err, response) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+        }
 
         //send notif email to both user and admins
         var userNotifTemplate = new EmailTemplate(path.join(templatesDir, 'request-user-notification'));
