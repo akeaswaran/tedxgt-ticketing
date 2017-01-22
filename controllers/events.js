@@ -39,16 +39,21 @@ exports.add = function(req, res) {
                     "channel": "@akeaswaran",
                     "attachments":[
                         {
-                            "fallback": "New event created:",
+                            "fallback": "New event created: https://tedxgeorgiatech.com/event/" + event._id,
                             "pretext": "New event created:",
                             "color":"#F7241E",
                             "title": event.name,
                             "title_link" : "https://tedxgeorgiatech.com/event/" + event._id,
                             "fields":[
                                 {
-                                    "title": event.description,
-                                    "value": "Planned for " + moment.tz(event.startDate, 'America/New_York').format('LLLL'),
+                                    "title": "Location",
+                                    "value": event.location,
                                     "short": false
+                                },
+                                {
+                                    "title": "Date",
+                                    "value" : moment.tz(event.startDate, 'America/New_York').format('LLLL'),
+                                    "short" : false
                                 }
                             ]
                         }

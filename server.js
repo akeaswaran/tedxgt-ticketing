@@ -266,11 +266,17 @@ app.post('/requestAccount', function(req, res) {
                             "fallback": "New account request <https://tedxgeorgiatech.com/accountRequests|View all requests>",
                             "pretext": "New account request <https://tedxgeorgiatech.com/accountRequests|View all requests>",
                             "color":"#F7241E",
+                            "title": account.name,
                             "fields":[
                                 {
-                                    "title": account.name,
-                                    "value": "@" + account.username + ", \<mailto:" + account.email + "|" + account.email + ">",
-                                    "short": false
+                                    "title": "Username",
+                                    "value": account.username,
+                                    "short": true
+                                },
+                                {
+                                    "title": "Email",
+                                    "value": account.email,
+                                    "short": true
                                 }
                             ]
                         }
