@@ -42,11 +42,11 @@ exports.add = function(req, res) {
                             "fallback": "New event created:",
                             "pretext": "New event created:",
                             "color":"#F7241E",
-                            "title": event.name + " (" + moment.tz(event.startDate, 'America/New_York').format('LLL') + ")",
+                            "title": event.name,
                             "title_link" : "https://tedxgeorgiatech.com/event/" + event._id,
                             "fields":[
                                 {
-                                    "title": event.name,
+                                    "title": event.description,
                                     "value": "Planned for " + moment.tz(event.startDate, 'America/New_York').format('LLLL'),
                                     "short": false
                                 }
