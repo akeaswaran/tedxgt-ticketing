@@ -36,7 +36,7 @@ exports.add = function(req, res) {
                 .send({
                     "username": "tedxbot",
                     "icon_emoji": ":x:",
-                    "channel": "@akeaswaran",
+                    "channel": "#tech",
                     "attachments":[
                         {
                             "fallback": "New event created: https://tedxgeorgiatech.com/event/" + event._id,
