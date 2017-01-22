@@ -32,7 +32,11 @@ exports.add = function(req, res) {
         if (err) return console.log(err);
 
         if (process.env.ENVIRONMENT === 'prod') {
-            //var eventUpdate = "New event \"" + event.name + "\" created for " + moment.tz(event.startDate, 'America/New_York').format('LLL') + "! \<https://tedxgeorgiatech.com/event/" + event._id + "|More details\>";
+            var cleanDescrip = event.description
+                .replace(/<br>/gi, "\n")
+                .replace(/<p.*>/gi, "\n")
+                .replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ($1) ")
+                .replace(/<(?:.|\s)*?>/g, "");
             sa.post(process.env.SLACK_WEBHOOK_URL)
                 .send({
                     "username": "tedxbot",
@@ -43,10 +47,12 @@ exports.add = function(req, res) {
                             "fallback": "New event created: <https://tedxgeorgiatech.com/event/" + event._id + "|More details>",
                             "pretext": "New event created: <https://tedxgeorgiatech.com/event/" + event._id + "|More details>",
                             "color":"#830F00",
+                            "title": event.name + " (" + moment.tz(event.startDate, 'America/New_York').format('LLL') + ")",
+                            "title_link" : "https://tedxgeorgiatech.com/event/" + event._id,
                             "fields":[
                                 {
-                                    "title": event.name + "(" + moment.tz(event.startDate, 'America/New_York').format('LLL') + ")",
-                                    "value": event.description,
+                                    "title": event.name + " (" + moment.tz(event.startDate, 'America/New_York').format('LLL') + ")",
+                                    "text": cleanDescrip,
                                     "short": false
                                 }
                             ]
