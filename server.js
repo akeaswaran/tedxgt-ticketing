@@ -263,12 +263,12 @@ app.post('/requestAccount', function(req, res) {
                     "channel": "@akeaswaran",
                     "attachments":[
                         {
-                            "fallback": "New account request: " + account.name + " (@" + account.username + ") <https://tedxgeorgiatech.com/accountRequests|View all requests>",
-                            "pretext": "New account request: " + account.name + " (@" + account.username + ") <https://tedxgeorgiatech.com/accountRequests|View all requests>",
-                            "color":"#830F00",
+                            "fallback": "New account request <https://tedxgeorgiatech.com/accountRequests|View all requests>",
+                            "pretext": "New account request <https://tedxgeorgiatech.com/accountRequests|View all requests>",
+                            "color":"#F7241E",
                             "fields":[
                                 {
-                                    "title": "Name: " + account.name,
+                                    "title": account.name,
                                     "value": "@" + account.username + ", \<mailto:" + account.email + "|" + account.email + ">",
                                     "short": false
                                 }

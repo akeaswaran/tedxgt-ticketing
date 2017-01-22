@@ -41,13 +41,13 @@ exports.add = function(req, res) {
                         {
                             "fallback": "New event created:",
                             "pretext": "New event created:",
-                            "color":"#830F00",
+                            "color":"#F7241E",
                             "title": event.name + " (" + moment.tz(event.startDate, 'America/New_York').format('LLL') + ")",
                             "title_link" : "https://tedxgeorgiatech.com/event/" + event._id,
                             "fields":[
                                 {
                                     "title": event.name,
-                                    "text": "Planned for " + moment.tz(event.startDate, 'America/New_York').format('LLLL'),
+                                    "value": "Planned for " + moment.tz(event.startDate, 'America/New_York').format('LLLL'),
                                     "short": false
                                 }
                             ]
