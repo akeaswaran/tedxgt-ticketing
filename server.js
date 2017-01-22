@@ -256,13 +256,25 @@ app.post('/requestAccount', function(req, res) {
         });
 
         if (process.env.ENVIRONMENT === 'prod') {
-            var accUpdate = "New account request for " + account.name + " (@" + account.username + ", \<mailto:" + account.email + "|" + account.email + ">)! \<https://tedxgeorgiatech.com/accountRequests|View all requests\>";
             sa.post(process.env.SLACK_WEBHOOK_URL)
                 .send({
-                    "text": accUpdate,
                     "username": "tedxbot",
                     "icon_emoji": ":x:",
-                    "channel": "@akeaswaran"
+                    "channel": "@akeaswaran",
+                    "attachments":[
+                        {
+                            "fallback": "New account request: " + account.name + " (@" + account.username + ") <https://tedxgeorgiatech.com/accountRequests|View all requests>",
+                            "pretext": "New account request: " + account.name + " (@" + account.username + ") <https://tedxgeorgiatech.com/accountRequests|View all requests>",
+                            "color":"#830F00",
+                            "fields":[
+                                {
+                                    "title": "Name: " + account.name,
+                                    "value": "@" + account.username + ", \<mailto:" + account.email + "|" + account.email + ">",
+                                    "short": false
+                                }
+                            ]
+                        }
+                    ]
                 })
                 .end(function(err, response) {
                     if (err) {

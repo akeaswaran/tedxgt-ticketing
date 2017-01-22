@@ -32,19 +32,35 @@ exports.add = function(req, res) {
         if (err) return console.log(err);
 
         if (process.env.ENVIRONMENT === 'prod') {
-            var eventUpdate = "New event \"" + event.name + "\" created for " + moment.tz(event.startDate, 'America/New_York') + "! \<https://tedxgeorgiatech.com/event/" + event._id + "|More details\>";
+            //var eventUpdate = "New event \"" + event.name + "\" created for " + moment.tz(event.startDate, 'America/New_York').format('LLL') + "! \<https://tedxgeorgiatech.com/event/" + event._id + "|More details\>";
             sa.post(process.env.SLACK_WEBHOOK_URL)
                 .send({
-                    "text": eventUpdate,
                     "username": "tedxbot",
                     "icon_emoji": ":x:",
-                    "channel": "@akeaswaran"
+                    "channel": "@akeaswaran",
+                    "attachments":[
+                        {
+                            "fallback": "New event created: <https://tedxgeorgiatech.com/event/" + event._id + "|More details>",
+                            "pretext": "New event created: <https://tedxgeorgiatech.com/event/" + event._id + "|More details>",
+                            "color":"#830F00",
+                            "fields":[
+                                {
+                                    "title": event.name + "(" + moment.tz(event.startDate, 'America/New_York').format('LLL') + ")",
+                                    "value": event.description,
+                                    "short": false
+                                }
+                            ]
+                        }
+                    ]
                 })
                 .end(function(err, response) {
                     if (err) {
                         console.log(err);
                     }
                 });
+
+            /*
+            */
         }
 
         return res.send(event);
