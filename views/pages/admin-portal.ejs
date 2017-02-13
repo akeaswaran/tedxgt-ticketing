@@ -640,6 +640,7 @@
             html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required>" + tc.description + "</textarea>"
             html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"" + tc.price + "\" required></div>";
             html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"" + tc.numTickets + "\" required>";
+            html += "<label for=\"tc-accesscode-" + index + "\">Access Code</label><input type=\"number\" class=\"form-control\" id=\"tc-accesscode-" + index + "\" placeholder=\"e.g. 'tedxgt-secret-access-section' \" value=\"" + tc.accessCode + "\" required>";
             html += "</form>";
             html += "</div>";
             html += "</div>";
@@ -658,6 +659,7 @@
             html += "<label for=\"tc-description-" + index + "\">Description</label><textarea placeholder=\"e.g. 'Front-row seats!' \" class=\"form-control\" id=\"tc-description-" + index + "\" rows=\"2\" required>New TC Details</textarea>"
             html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"0.00\" required></div>";
             html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"100\" required>";
+            html += "<label for=\"tc-accesscode-" + index + "\">Access Code</label><input type=\"number\" class=\"form-control\" id=\"tc-accesscode-" + index + "\" placeholder=\"e.g. 'tedxgt-secret-access-section' \" value=\"\" required>";
             html += "</form>";
             html += "</div>";
             html += "</div>";
@@ -729,6 +731,7 @@
                     description: $('#tc-description-' + i).val(),
                     price: $('#tc-price-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
+                    accessCode: $('#tc-accesscode-' + i).val(),
                     event: $('#edit-save-event').data('event-id')
                 });
             }
@@ -819,6 +822,7 @@
                     name: $('#tc-name-' + i).val(),
                     description: $('#tc-description-' + i).val(),
                     price: $('#tc-price-' + i).val(),
+                    accessCode: $('#tc-accesscode-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
                     event: $('#edit-save-event').data('event-id')
                 });
