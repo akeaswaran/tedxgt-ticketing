@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
 var TicketCategorySchema = new Schema({
     name: String,
     description: String,
+    accessCode: String,
     price: Number,
     numTickets: Number,
     numTicketsSold: Number,

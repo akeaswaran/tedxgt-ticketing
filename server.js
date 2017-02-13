@@ -421,6 +421,7 @@ app.get('/', function (request, response) {
 });
 
 app.get('/event/:id', function(req, res) {
+    var accessCode = req.query.accessCode;
     Event.findById(req, res, function(error, result) {
         if (error) {
             handleError("EVENT GET REQUEST - Could not find event with id " + req.params.id, 'warn');
@@ -428,6 +429,7 @@ app.get('/event/:id', function(req, res) {
         } else {
             res.render('pages/event', {
                 moment: momenttz,
+                accessCode: accessCode,
                 event: {
                     _id: result._id,
                     name: result.name,

@@ -56,7 +56,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="buy-event-ticket-modal-label">Buy Event Ticket</h4>
+                    <h4 class="modal-title" id="buy-event-ticket-modal-label">Attendee Information</h4>
                 </div>
                 <div class="modal-body">
                     <form role="form" data-toggle="validator" id="attDataForm">
@@ -115,7 +115,8 @@
                         <caption>Available as of <%= moment().tz('America/New_York').format('llll') %>.</caption>
                         <tbody>
                             <% event.ticketCategories.forEach(function(ticketCategory, idx, array) { %>
-                                    <% if (ticketCategory.numTickets - ticketCategory.numTicketsSold > 0) {%>
+                                    <% if (accessCode === ticketCategory.accessCode || ticketCategory.accessCode.length == 0) { %>
+                                        <% if (ticketCategory.numTickets - ticketCategory.numTicketsSold > 0) {%>
                                         <tr>
                                             <th><%= ticketCategory.name %> (<%= ticketCategory.numTickets - ticketCategory.numTicketsSold %> left)</th>
                                             <td align="center"><%= ticketCategory.description %></td>
@@ -125,12 +126,13 @@
                                             <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Reserve</button></td>
                                             <% } %>
                                         </tr>
-                                    <% } else { %>
+                                        <% } else { %>
                                         <tr>
                                             <th><%= ticketCategory.name %></th>
                                             <td align="center"><%= ticketCategory.description %></td>
                                             <td align="right">SOLD OUT</td>
                                         </tr>
+                                        <% } %>
                                     <% } %>
                             <%  }); %>
                         </tbody>
