@@ -16,6 +16,7 @@ var EventSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TicketCategory'
     }],
+    waitlist: String,
     closed: Boolean,
     live: Boolean
 });

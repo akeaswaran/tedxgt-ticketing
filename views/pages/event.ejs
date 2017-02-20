@@ -61,8 +61,13 @@
                 <div class="modal-body">
                     <form role="form" data-toggle="validator" id="attDataForm">
                         <div class="form-group has-feedback">
-                            <label for="charge-name" class="control-label">Name</label>
-                            <input class="form-control" id="charge-name" data-error="Please complete this field" required>
+                            <label for="charge-name" class="control-label">First Name</label>
+                            <input class="form-control" id="charge-first-name" data-error="Please complete this field" required>
+                            <div class="help-block with-errors"></div>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="charge-name" class="control-label">Last Name</label>
+                            <input class="form-control" id="charge-last-name" data-error="Please complete this field" required>
                             <div class="help-block with-errors"></div>
                         </div>
                         <div class="form-group has-feedback">
@@ -112,29 +117,36 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2 subtext">
                     <table class="table">
-                        <caption>Available as of <%= moment().tz('America/New_York').format('llll') %>.</caption>
+                        <!--<caption>Available as of <%= moment().tz('America/New_York').format('llll') %>.</caption>-->
+                        <% var added = 0; %>
                         <tbody>
-                            <% event.ticketCategories.forEach(function(ticketCategory, idx, array) { %>
-                                    <% if (accessCode === ticketCategory.accessCode || ticketCategory.accessCode.length == 0) { %>
-                                        <% if (ticketCategory.numTickets - ticketCategory.numTicketsSold > 0) {%>
-                                        <tr>
-                                            <th><%= ticketCategory.name %> (<%= ticketCategory.numTickets - ticketCategory.numTicketsSold %> left)</th>
-                                            <td align="center"><%= ticketCategory.description %></td>
-                                            <% if (ticketCategory.price > 0) { %>
-                                            <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy ($<%= ticketCategory.price %>)</button></td>
-                                            <% } else { %>
-                                            <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Reserve</button></td>
-                                            <% } %>
-                                        </tr>
-                                        <% } else { %>
-                                        <tr>
-                                            <th><%= ticketCategory.name %></th>
-                                            <td align="center"><%= ticketCategory.description %></td>
-                                            <td align="right">SOLD OUT</td>
-                                        </tr>
-                                        <% } %>
-                                    <% } %>
-                            <%  }); %>
+                        <% event.ticketCategories.forEach(function(ticketCategory, idx, array) { %>
+                        <% if (accessCode === ticketCategory.accessCode || ticketCategory.accessCode.length == 0) { %>
+                        <% if (ticketCategory.numTickets - ticketCategory.numTicketsSold > 0) {%>
+                        <tr>
+                            <th><%= ticketCategory.name %> (<%= ticketCategory.numTickets - ticketCategory.numTicketsSold %> left)</th>
+                            <td align="center"><%= ticketCategory.description %></td>
+                            <% if (ticketCategory.price > 0) { %>
+                            <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy ($<%= ticketCategory.price %>)</button></td>
+                            <% } else { %>
+                            <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Reserve</button></td>
+                            <% } %>
+                        </tr>
+                        <% } else { %>
+                        <tr>
+                            <th><%= ticketCategory.name %></th>
+                            <td align="center"><%= ticketCategory.description %></td>
+                            <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger waitlist-tc-button" data-idx="<%= idx %>">Waitlist</button></td>
+                        </tr>
+                        <% } %>
+                        <% added++; %>
+                        <% } %>
+                        <%  }); %>
+                        <% if (added === 0) { %>
+                        <tr>
+                            <td align="center">No tickets available.</td>
+                        </tr>
+                        <% } %>
                         </tbody>
                     </table>
                 </div>
@@ -197,7 +209,7 @@
                 tcData: tcData
             },
             function(data) {
-                console.log("DATA: " + JSON.stringify(data, null, '\t'));
+                //console.log("DATA: " + JSON.stringify(data, null, '\t'));
                 if (data["status"] == "ok") {
                     window.location = "/confirmation/" + data.ticket._id;
                 } else {
@@ -222,6 +234,11 @@
         });
     }
 
+    $('.waitlist-tc-button').on('click', function(e) {
+       e.preventDefault();
+       window.location = "<%= event.waitlist %>";
+    });
+
     $('.buy-tc-button').on('click', function(e) {
         e.preventDefault();
         $('#buy-event-ticket-button').data('idx', $(this).data('idx'));
@@ -233,9 +250,10 @@
         var tcIdx = $('#buy-event-ticket-button').data('idx');
         var tcs = <%- JSON.stringify(event.ticketCategories) %>;
         var tcData = tcs[tcIdx];
-        var attData =  { name: $('#charge-name').val(), email: $('#charge-email').val().toLocaleLowerCase() };
+        var isGuest = ('<%- accessCode %>' !== '' && '<%- accessCode%>'.length > 0 && tcData.accessCode === '<%- accessCode %>');
+        var attData =  { firstName: $('#charge-first-name').val(),lastName: $('#charge-first-name').val(), email: $('#charge-email').val().toLocaleLowerCase(), guest: isGuest };
 
-        if (tcData.price !== 0 && tcData.price !== '0' && tcData.price !== '0.00' && tcData.price !== 0.00) {
+        if (tcData.price !== 0 && tcData.price !== '0' && tcData.price !== '0.00' && tcData.price !== 0.00 && !isGuest) {
             var handler = createCheckoutHandler(tcData, attData);
             handler.open({
                 name: 'TEDxGeorgiaTech',

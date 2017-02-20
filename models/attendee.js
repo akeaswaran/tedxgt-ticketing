@@ -2,8 +2,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var AttendeeSchema = new Schema({
-    name: String,
-    email: String
+    firstName: String,
+    lastName: String,
+    email: String,
+    guest: Boolean
 });
 
 mongoose.model('Attendee', AttendeeSchema);

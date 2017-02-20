@@ -289,44 +289,48 @@ app.post('/requestAccount', function(req, res) {
                 });
         }
 
-        //send notif email to both user and admins
-        var userNotifTemplate = new EmailTemplate(path.join(templatesDir, 'request-user-notification'));
-        userNotifTemplate.render({ account : account }, function(err, results) {
-            if (err) {
-                return handleError(err, 'warn');
-            }
-
-            transport.sendMail({
-                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
-                to: account.email,
-                subject: 'Account Request for ' + account.name + ' Successful!',
-                html: results.html
-            }, function (err, responseStatus) {
+        if (process.env.ENVIRONMENT !== 'dev') {
+            //send notif email to both user and admins
+            var userNotifTemplate = new EmailTemplate(path.join(templatesDir, 'request-user-notification'));
+            userNotifTemplate.render({ account : account }, function(err, results) {
                 if (err) {
-                    handleError(err, 'warn');
+                    return handleError(err, 'warn');
                 }
-                handleError(responseStatus.message, 'info');
-            })
-        });
 
-        var adminRequestTemplate = new EmailTemplate(path.join(templatesDir, 'request-notification'));
-        adminRequestTemplate.render({ account : account, host: req.protocol + '://' + req.get('host') }, function (err, results) {
-            if (err) {
-                return handleError(err, 'warn');
-            }
-
-            transport.sendMail({
-                from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
-                to: 'tedxgeorgiatech@gmail.com',
-                subject: 'New account request from ' + account.name,
-                html: results.html
-            }, function (err, responseStatus) {
-                if (err) {
-                    handleError(err, 'warn');
-                }
-                handleError(responseStatus.message, 'info');
+                transport.sendMail({
+                    from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+                    to: account.email,
+                    subject: 'Account Request for ' + account.name + ' Successful!',
+                    html: results.html
+                }, function (err, responseStatus) {
+                    if (err) {
+                        handleError(err, 'warn');
+                    } else {
+                        handleError(responseStatus.message, 'info');
+                    }
+                });
             });
-        });
+
+            var adminRequestTemplate = new EmailTemplate(path.join(templatesDir, 'request-notification'));
+            adminRequestTemplate.render({ account : account, host: req.protocol + '://' + req.get('host') }, function (err, results) {
+                if (err) {
+                    return handleError(err, 'warn');
+                }
+
+                transport.sendMail({
+                    from: 'TEDxGeorgiaTech Event Management System <tedxgeorgiatech@gmail.com>',
+                    to: 'tedxgeorgiatech@gmail.com',
+                    subject: 'New account request from ' + account.name,
+                    html: results.html
+                }, function (err, responseStatus) {
+                    if (err) {
+                        handleError(err, 'warn');
+                    } else {
+                        handleError(responseStatus.message, 'info');
+                    }
+                });
+            });
+        }
     });
 });
 
@@ -435,7 +439,7 @@ app.get('/event/:id', function(req, res) {
                     name: result.name,
                     description: result.description,
                     location: result.location,
-                    url: result.url,
+                    waitlist: result.waitlist,
                     closed: result.closed,
                     ticketCategories: result.ticketCategories,
                     startDate: momenttz.tz(result.startDate, 'America/New_York'),
@@ -589,7 +593,7 @@ app.get('/ticket-category/:id/csv', function(req, res) {
                 var tc = docs[0];
                 var csv = [];
                 tc.tickets.forEach(function(ticket) {
-                    csv.push({name: ticket.attendee.name, email:ticket.attendee.email })
+                    csv.push({firstName: ticket.attendee.firstName, lastName: ticket.attendee.lastName, email:ticket.attendee.email, guest: (ticket.attendee.guest) ? 'Yes' : 'No' });
                 });
                 res.csv(csv);
             },
@@ -613,7 +617,7 @@ app.get('/event/:id/attendees/csv', function(req, res) {
                 var event = docs[0];
                 var csv = [];
                 event.attendees.forEach(function(attendee) {
-                    csv.push({name: attendee.name, email:attendee.email })
+                    csv.push({firstName: attendee.firstName, lastName: attendee.lastName, email:attendee.email, guest: (attendee.guest) ? 'Yes' : 'No' });
                 });
                 res.csv(csv);
             },

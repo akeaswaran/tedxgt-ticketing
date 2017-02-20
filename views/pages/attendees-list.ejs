@@ -40,7 +40,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <%= event.name %> (<%= event.attendees.length %>)
+                    <%= event.name %> (<%= event.attendees.length %> attendees)
                     <a role="button" type="button" class="btn btn-xs btn-default pull-right" href="/event/<%= event.id %>/attendees/csv">export to csv</a>
                 </h3>
             </div>
@@ -48,17 +48,26 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
                     <th>Email</th>
+                    <th>Guest?</th>
                 </tr>
                 </thead>
                 <tbody>
                 <% event.attendees.forEach(function(attendee) { %>
                     <tr>
-                        <td><%= attendee.name %></td>
+                        <td><%= attendee.firstName %></td>
+                        <td><%= attendee.lastName %></td>
                         <td><a href="mailto:<%= attendee.email %>"><%= attendee.email %></a></td>
+                        <% if (attendee.guest) { %>
+                        <td>Yes</td>
+                        <% } else { %>
+                        <td>No</td>
+                        <% } %>
                     </tr>
                 <%});%>
+
                 </tbody>
             </table>
             <% } else { %>
