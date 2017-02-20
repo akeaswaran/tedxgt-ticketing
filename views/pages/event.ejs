@@ -251,7 +251,7 @@
         var tcs = <%- JSON.stringify(event.ticketCategories) %>;
         var tcData = tcs[tcIdx];
         var isGuest = ('<%- accessCode %>' !== '' && '<%- accessCode%>'.length > 0 && tcData.accessCode === '<%- accessCode %>');
-        var attData =  { firstName: $('#charge-first-name').val(),lastName: $('#charge-first-name').val(), email: $('#charge-email').val().toLocaleLowerCase(), guest: isGuest };
+        var attData =  { firstName: $('#charge-first-name').val(),lastName: $('#charge-last-name').val(), email: $('#charge-email').val().toLocaleLowerCase(), guest: isGuest };
 
         if (tcData.price !== 0 && tcData.price !== '0' && tcData.price !== '0.00' && tcData.price !== 0.00 && !isGuest) {
             var handler = createCheckoutHandler(tcData, attData);
