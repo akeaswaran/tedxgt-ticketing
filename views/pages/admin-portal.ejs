@@ -429,6 +429,7 @@
                     price: $('#tc-price-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
                     numTicketsSold: 0,
+                    accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     tickets: []
                 });
             }
@@ -516,6 +517,7 @@
                     description: $('#tc-description-' + i).val(),
                     price: $('#tc-price-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
+                    accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     numTicketsSold: 0,
                     tickets: []
                 });
@@ -748,7 +750,7 @@
                     description: $('#tc-description-' + i).val(),
                     price: $('#tc-price-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
-                    accessCode: $('#tc-accesscode-' + i).val(),
+                    accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     event: $('#edit-save-event').data('event-id')
                 });
             }
@@ -841,7 +843,7 @@
                     name: $('#tc-name-' + i).val(),
                     description: $('#tc-description-' + i).val(),
                     price: $('#tc-price-' + i).val(),
-                    accessCode: $('#tc-accesscode-' + i).val(),
+                    accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     numTickets: $('#tc-numtickets-' + i).val(),
                     event: $('#edit-save-event').data('event-id')
                 });
