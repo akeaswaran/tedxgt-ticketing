@@ -15,10 +15,11 @@ var express = require('express'),
     EmailTemplate = require('email-templates').EmailTemplate,
     async = require('async'),
     path = require('path'),
-    stripe = require('stripe')(process.env.STRIPE_API_SECRET_KEY),
     csv = require('express-csv'),
     momenttz = require('moment-timezone'),
     sa = require('superagent');
+
+var stripe = require('stripe')(process.env.STRIPE_API_SECRET_KEY);
 
 //app setup
 var app = express();
@@ -478,6 +479,7 @@ app.post('/charge', function(req, res) {
                     res.send(500, err);
                 } else {
                     handleChargeResult(res, attendeeData, tcData, function(ticket) {
+                        console.log('NO CHARGE CREATE ERROR');
                         res.send({
                             ticket: ticket,
                             status: 'ok',
@@ -506,15 +508,15 @@ function handleChargeResult(res, attendeeData, tcData, callback) {
                 attendee: attendee._id
             }, function(err, ticket) {
                 if (err) {
-                    console.log(err);
+                    console.log('HANDLE CHARGE RESULT: ' + err);
                     res.send({
                         ticket: null,
                         status: 'bad',
                         message: err
                     });
+                } else {
+                    callback(ticket);
                 }
-
-                callback(ticket);
             });
     });
 }

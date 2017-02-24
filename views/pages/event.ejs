@@ -202,22 +202,43 @@
 
 <script>
     function postCharge(token, tcData, attData) {
-        $.post("/reservation",
-            {
-                token: token,
-                attData: attData,
-                tcData: tcData
-            },
-            function(data) {
-                //console.log("DATA: " + JSON.stringify(data, null, '\t'));
-                if (data["status"] == "ok") {
-                    window.location = "/confirmation/" + data.ticket._id;
-                } else {
-                    // Deal with error
-                    alert(data["message"]);
+        if (token !== '') {
+            $.post("/charge",
+                {
+                    token: token,
+                    attData: attData,
+                    tcData: tcData
+                },
+                function(data) {
+                    //console.log("PAID TRANSACTION END");
+                    //console.log("DATA: " + JSON.stringify(data, null, '\t'));
+                    if (data["status"] == "ok") {
+                        window.location = "/confirmation/" + data.ticket._id;
+                    } else {
+                        // Deal with error
+                        alert(data["message"]);
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            $.post("/reservation",
+                {
+                    token: token,
+                    attData: attData,
+                    tcData: tcData
+                },
+                function(data) {
+                    //console.log("FREE TRANSACTION END");
+                    //console.log("DATA: " + JSON.stringify(data, null, '\t'));
+                    if (data["status"] == "ok") {
+                        window.location = "/confirmation/" + data.ticket._id;
+                    } else {
+                        // Deal with error
+                        alert(data["message"]);
+                    }
+                }
+            );
+        }
     }
 
     function createCheckoutHandler(tcData, attData) {
@@ -229,6 +250,7 @@
             email: attData.email,
             token: function(token) {
                 // Send the charge through
+                console.log("PAID TRANSACTION START");
                 postCharge(token, tcData, attData);
             }
         });
@@ -265,6 +287,7 @@
                 handler.close();
             });
         } else {
+            console.log("FREE TRANSACTION START");
             postCharge('', tcData, attData);
         }
     });
