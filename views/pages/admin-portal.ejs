@@ -343,6 +343,12 @@
             'save table contextmenu directionality emoticons template paste textcolor'
         ]
     });
+
+    $(document).on('focusin', function(e) {
+        if ($(e.target).closest(".mce-window").length) {
+            e.stopImmediatePropagation();
+        }
+    });
 </script>
 
 <script>

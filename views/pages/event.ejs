@@ -124,7 +124,7 @@
                         <% if (accessCode === ticketCategory.accessCode || ticketCategory.accessCode.length == 0) { %>
                         <% if (ticketCategory.numTickets - ticketCategory.numTicketsSold > 0) {%>
                         <tr>
-                            <th><%= ticketCategory.name %> (<%= ticketCategory.numTickets - ticketCategory.numTicketsSold %> left)</th>
+                            <th><%= ticketCategory.name %></th>
                             <td align="center"><%= ticketCategory.description %></td>
                             <% if (ticketCategory.price > 0) { %>
                             <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy ($<%= ticketCategory.price %>)</button></td>
