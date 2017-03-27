@@ -15,7 +15,8 @@ var TicketCategorySchema = new Schema({
     event: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Event'
-    }
+    },
+    gatechRestricted: Boolean
 });
 
 TicketCategorySchema.pre('remove', function(next) {

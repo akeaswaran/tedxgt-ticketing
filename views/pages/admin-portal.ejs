@@ -67,11 +67,6 @@
                         <p class="help-block">Where will your event be? <b>Note</b>: This will be used by Google Maps to help attendees get to your event, so make sure it is a valid address.</p>
                     </div>
                     <div class="form-group">
-                        <label for="event-waitlist-url" class="control-label">Waitlist URL</label>
-                        <input class="form-control" id="event-waitlist-url" required>
-                        <p class="help-block">When your event fills up, where do you want more people to go sign up?</p>
-                    </div>
-                    <div class="form-group">
                         <label for="event-start-date" class="control-label">Start Date</label>
                         <div class='input-group date' id='event-start-date' required>
                             <input type='text' class="form-control" />
@@ -133,11 +128,6 @@
                         <label for="edit-event-location" class="control-label">Location</label>
                         <input class="form-control" id="edit-event-location" required>
                         <p class="help-block">Where will your event be? <b>Note</b>: This will be used by Google Maps to help attendees get to your event, so make sure it is a valid address.</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-event-waitlist-url" class="control-label">Waitlist URL</label>
-                        <input class="form-control" id="edit-event-waitlist-url" required>
-                        <p class="help-block">When your event fills up, where do you want more people to go sign up?</p>
                     </div>
                     <div class="form-group">
                         <label for="edit-event-start-date" class="control-label">Start Date</label>
@@ -403,7 +393,6 @@
             && $('#event-name').val() !== null
             && tinymce.get('event-description').getContent() !== null
             && $('#event-location').val() !== null
-            && $('#event-waitlist-url').val() !== null
             && $('#event-start-date').data("DateTimePicker").date() !== null
             && $('#event-end-date').data("DateTimePicker").date() !== null
             && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
@@ -411,7 +400,6 @@
             var eventName = $('#event-name').val();
             var eventDescription = tinymce.get('event-description').getContent();
             var eventLocation = $('#event-location').val();
-            var waitlistUrl = $('#event-waitlist-url').val();
             var startDate = $('#event-start-date').data("DateTimePicker").date();
             var endDate = $('#event-end-date').data("DateTimePicker").date();
 
@@ -419,7 +407,6 @@
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "waitlist" : waitlistUrl,
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "closed" : false,
@@ -436,7 +423,8 @@
                     numTickets: $('#tc-numtickets-' + i).val(),
                     numTicketsSold: 0,
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
-                    tickets: []
+                    tickets: [],
+                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked")
                 });
             }
 
@@ -492,7 +480,6 @@
             && $('#event-name').val() !== null
             && tinymce.get('event-description').getContent() !== null
             && $('#event-location').val() !== null
-            && $('#event-waitlist-url').val() !== null
             && $('#event-start-date').data("DateTimePicker").date() !== null
             && $('#event-end-date').data("DateTimePicker").date() !== null
             && moment($('#event-start-date').data("DateTimePicker").date()).isBefore($('#event-end-date').data("DateTimePicker").date())
@@ -500,7 +487,6 @@
             var eventName = $('#event-name').val();
             var eventDescription = tinymce.get('event-description').getContent();
             var eventLocation = $('#event-location').val();
-            var waitlistUrl = $('#event-waitlist-url').val();
             var startDate = $('#event-start-date').data("DateTimePicker").date();
             var endDate = $('#event-end-date').data("DateTimePicker").date();
 
@@ -508,7 +494,6 @@
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "waitlist" : waitlistUrl,
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "closed" : false,
@@ -581,7 +566,6 @@
         $('#edit-event-name').val(event.name);
         tinymce.get('edit-event-description').setContent(event.description);
         $('#edit-event-location').val(event.location);
-        $('#edit-event-waitlist-url').val(event.waitlist);
         $('#edit-close-event-box').prop('checked', event.closed);
         $('#edit-event-start-date').data("DateTimePicker").date(moment(event.startDate));
         $('#edit-event-end-date').data("DateTimePicker").date(moment(event.endDate));
@@ -664,6 +648,12 @@
             html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"" + tc.price + "\" required></div>";
             html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"" + tc.numTickets + "\" required>";
             html += "<label for=\"tc-accesscode-" + index + "\">Access Code</label><input type=\"text\" class=\"form-control\" id=\"tc-accesscode-" + index + "\" placeholder=\"e.g. 'tedxgt-secret-access-section' \" value=\"" + tc.accessCode + "\" required>";
+            if (tc.gatechRestricted) {
+                html += "<div class=\"checkbox\"><label class=\"control-label\"><input type=\"checkbox\" id=\"tc-gatech-restrict-box-" + index + "\" checked=\"" + tc.gatechRestricted + "\"> Should these be discounted for Georgia Tech students?</label></div>";
+            } else {
+                html += "<div class=\"checkbox\"><label class=\"control-label\"><input type=\"checkbox\" id=\"tc-gatech-restrict-box-" + index + "\"> Should these be discounted for Georgia Tech students?</label></div>";
+
+            }
             html += "</form>";
             html += "</div>";
             html += "</div>";
@@ -683,6 +673,7 @@
             html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"0.00\" required></div>";
             html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"100\" required>";
             html += "<label for=\"tc-accesscode-" + index + "\">Access Code</label><input type=\"text\" class=\"form-control\" id=\"tc-accesscode-" + index + "\" placeholder=\"e.g. 'tedxgt-secret-access-section' \" value=\"\" required>";
+            html += "<div class=\"checkbox\"><label class=\"control-label\"><input type=\"checkbox\" id=\"tc-gatech-restrict-box-" + index + "\"> Should these be discounted for Georgia Tech students?</label></div>";
             html += "</form>";
             html += "</div>";
             html += "</div>";
@@ -724,7 +715,6 @@
             && $('#edit-event-name').val() !== null
             && tinymce.get('edit-event-description').getContent() !== null
             && $('#edit-event-location').val() !== null
-            && $('#edit-event-waitlist-url').val() !== null
             && $('#edit-event-start-date').data("DateTimePicker").date() !== null
             && $('#edit-event-end-date').data("DateTimePicker").date() !== null
             && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
@@ -735,13 +725,11 @@
             var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
             var endDate = $('#edit-event-end-date').data("DateTimePicker").date();
             var closedStatus = $('#edit-close-event-box').is(":checked");
-            var waitlistUrl = $('#edit-event-waitlist-url').val();
 
             var postData = {
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "waitlist" : waitlistUrl,
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "live" : true,
@@ -757,7 +745,8 @@
                     price: $('#tc-price-' + i).val(),
                     numTickets: $('#tc-numtickets-' + i).val(),
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
-                    event: $('#edit-save-event').data('event-id')
+                    event: $('#edit-save-event').data('event-id'),
+                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked")
                 });
             }
 
@@ -818,7 +807,6 @@
             && $('#edit-event-name').val() !== null
             && tinymce.get('edit-event-description').getContent() !== null
             && $('#edit-event-location').val() !== null
-            && $('#edit-event-waitlist-url').val() !== null
             && $('#edit-event-start-date').data("DateTimePicker").date() !== null
             && $('#edit-event-end-date').data("DateTimePicker").date() !== null
             && moment($('#edit-event-start-date').data("DateTimePicker").date()).isBefore($('#edit-event-end-date').data("DateTimePicker").date())
@@ -829,13 +817,11 @@
             var startDate = $('#edit-event-start-date').data("DateTimePicker").date();
             var endDate = $('#edit-event-end-date').data("DateTimePicker").date();
             var closedStatus = $('#edit-close-event-box').is(":checked");
-            var waitlistUrl = $('#edit-event-waitlist-url').val();
 
             var postData = {
                 "name" : eventName,
                 "location" : eventLocation,
                 "description" : eventDescription,
-                "waitlist" : waitlistUrl,
                 "startDate" : startDate.toDate(),
                 "endDate" : endDate.toDate(),
                 "live" : false,
@@ -851,7 +837,8 @@
                     price: $('#tc-price-' + i).val(),
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     numTickets: $('#tc-numtickets-' + i).val(),
-                    event: $('#edit-save-event').data('event-id')
+                    event: $('#edit-save-event').data('event-id'),
+                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked")
                 });
             }
 
