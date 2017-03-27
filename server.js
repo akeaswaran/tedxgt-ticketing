@@ -465,10 +465,14 @@ app.post('/charge', function(req, res) {
             return res.send(500, { error: err });
         }
 
+        var price = (tcData.price * 100);
+        if (tcData.gatechRestricted) {
+            price *= 0.75;
+        }
         stripe.charges.create({
                 source: stripeToken.id,
                 currency: 'usd',
-                amount: (tcData.price * 100), //converting to cents
+                amount: price, //converting to cents
                 description: "Ticket for " + tcData.name  + " section in event " + event.name,
                 receipt_email: attendeeData.email,
                 statement_descriptor: 'TEDxGT Event Ticket'
