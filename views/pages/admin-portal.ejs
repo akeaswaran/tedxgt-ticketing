@@ -510,7 +510,8 @@
                     numTickets: $('#tc-numtickets-' + i).val(),
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     numTicketsSold: 0,
-                    tickets: []
+                    tickets: [],
+                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked"),
                 });
             }
 
