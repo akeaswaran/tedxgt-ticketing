@@ -466,9 +466,10 @@ app.post('/charge', function(req, res) {
         }
 
         var price = (tcData.price * 100);
-        if (tcData.gatechRestricted) {
+        if (tcData.gatechRestricted !== null && tcData.gatechRestricted === true) {
             price *= 0.75;
         }
+
         stripe.charges.create({
                 source: stripeToken.id,
                 currency: 'usd',
