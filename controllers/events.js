@@ -39,11 +39,11 @@ exports.add = function(req, res) {
                     "channel": "#tech",
                     "attachments":[
                         {
-                            "fallback": "New event created: https://tedxgeorgiatech.com/event/" + event._id,
+                            "fallback": "New event created: https://www.tedxgeorgiatech.com/event/" + event._id,
                             "pretext": "New event created:",
                             "color":"#F7241E",
                             "title": event.name,
-                            "title_link" : "https://tedxgeorgiatech.com/event/" + event._id,
+                            "title_link" : "https://www.tedxgeorgiatech.com/event/" + event._id,
                             "fields":[
                                 {
                                     "title": "Location",
