@@ -424,7 +424,7 @@
                     numTicketsSold: 0,
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     tickets: [],
-                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked")
+                    gatechRestricted: false
                 });
             }
 
@@ -511,7 +511,7 @@
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     numTicketsSold: 0,
                     tickets: [],
-                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked"),
+                    gatechRestricted: false
                 });
             }
 
@@ -649,12 +649,6 @@
             html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"" + tc.price + "\" required></div>";
             html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"" + tc.numTickets + "\" required>";
             html += "<label for=\"tc-accesscode-" + index + "\">Access Code</label><input type=\"text\" class=\"form-control\" id=\"tc-accesscode-" + index + "\" placeholder=\"e.g. 'tedxgt-secret-access-section' \" value=\"" + tc.accessCode + "\" required>";
-            if (tc.gatechRestricted) {
-                html += "<div class=\"checkbox\"><label class=\"control-label\"><input type=\"checkbox\" id=\"tc-gatech-restrict-box-" + index + "\" checked=\"" + tc.gatechRestricted + "\"> Should these be discounted for Georgia Tech students?</label></div>";
-            } else {
-                html += "<div class=\"checkbox\"><label class=\"control-label\"><input type=\"checkbox\" id=\"tc-gatech-restrict-box-" + index + "\"> Should these be discounted for Georgia Tech students?</label></div>";
-
-            }
             html += "</form>";
             html += "</div>";
             html += "</div>";
@@ -674,7 +668,6 @@
             html += "<label for=\"tc-price-" + index + "\">Price</label><div class=\"input-group\"><div class=\"input-group-addon\">$</div><input type=\"number\" class=\"form-control\" id=\"tc-price-" + index + "\" placeholder=\"e.g. '0.00' \" value=\"0.00\" required></div>";
             html += "<label for=\"tc-numtickets-" + index + "\">Number of Tickets</label><input type=\"number\" class=\"form-control\" id=\"tc-numtickets-" + index + "\" placeholder=\"e.g. '100' \" value=\"100\" required>";
             html += "<label for=\"tc-accesscode-" + index + "\">Access Code</label><input type=\"text\" class=\"form-control\" id=\"tc-accesscode-" + index + "\" placeholder=\"e.g. 'tedxgt-secret-access-section' \" value=\"\" required>";
-            html += "<div class=\"checkbox\"><label class=\"control-label\"><input type=\"checkbox\" id=\"tc-gatech-restrict-box-" + index + "\"> Should these be discounted for Georgia Tech students?</label></div>";
             html += "</form>";
             html += "</div>";
             html += "</div>";
@@ -747,7 +740,7 @@
                     numTickets: $('#tc-numtickets-' + i).val(),
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     event: $('#edit-save-event').data('event-id'),
-                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked")
+                    gatechRestricted: false
                 });
             }
 
@@ -839,7 +832,7 @@
                     accessCode: ($('#tc-accesscode-' + i).val() !== null) ? $('#tc-accesscode-' + i).val() : '',
                     numTickets: $('#tc-numtickets-' + i).val(),
                     event: $('#edit-save-event').data('event-id'),
-                    gatechRestricted: $('#tc-gatech-restrict-box-' + i).is(":checked")
+                    gatechRestricted: false
                 });
             }
 

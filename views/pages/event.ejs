@@ -113,7 +113,6 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2 subtext">
                     <table class="table">
-                        <!--<caption>Available as of <%= moment().tz('America/New_York').format('llll') %>.</caption>-->
                         <% var added = 0; %>
                         <tbody>
                         <% event.ticketCategories.forEach(function(ticketCategory, idx, array) { %>
@@ -123,9 +122,9 @@
                                         <th><%= ticketCategory.name %></th>
                                         <td align="center"><%= ticketCategory.description %></td>
                                         <% if (ticketCategory.price > 0) { %>
-                                        <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>" data-gatechrestricted="<%= ticketCategory.gatechRestricted %>">Buy ($<%= ticketCategory.price %>)</button></td>
+                                        <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Buy ($<%= ticketCategory.price %>)</button></td>
                                         <% } else { %>
-                                        <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>" data-gatechrestricted="<%= ticketCategory.gatechRestricted %>">Reserve</button></td>
+                                        <td align="right"><button type="button" role="button" class="btn btn-sm btn-danger buy-tc-button" data-idx="<%= idx %>">Reserve</button></td>
                                         <% } %>
                                     </tr>
                                 <% } else { %>
@@ -255,12 +254,6 @@
     $('.buy-tc-button').on('click', function(e) {
         e.preventDefault();
         $('#buy-event-ticket-button').data('idx', $(this).data('idx'));
-        $('#buy-event-ticket-button').data('gatechrestricted', $(this).data('gatechrestricted'));
-        if ($(this).data('gatechrestricted') === 'true' || $(this).data('gatechrestricted')) {
-            $('#buy-event-ticket-modal-email-field').append('<p class="help-block" id="discount-block">If you have a Georgia Tech email, you will get a 25% discount!</p>');
-        } else {
-            $('#discount-block', this).remove();
-        }
         $('#buy-event-ticket-modal').modal('show');
     });
 
@@ -280,9 +273,6 @@
         if (tcData.price !== 0 && tcData.price !== '0' && tcData.price !== '0.00' && tcData.price !== 0.00 && !isGuest) {
             var handler = createCheckoutHandler(tcData, attData);
             var price = tcData.price * 100;
-            if (tcData.gatechRestricted && attData.email.includes('gatech.edu')) {
-                price *= 0.75;
-            }
             handler.open({
                 name: 'TEDxGeorgiaTech',
                 description: "Ticket for " + tcData.name  + " section in event <%= event.name %>",
