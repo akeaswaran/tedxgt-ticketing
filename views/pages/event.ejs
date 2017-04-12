@@ -117,7 +117,7 @@
                         <tbody>
                         <% event.ticketCategories.forEach(function(ticketCategory, idx, array) { %>
                             <% if (accessCode === ticketCategory.accessCode || ticketCategory.accessCode.length == 0) { %>
-                                <% if (ticketCategory.numTickets - ticketCategory.numTicketsSold > 0) {%>
+                                <% if (ticketCategory.numTickets - ticketCategory.tickets.length > 0) {%>
                                     <tr>
                                         <th><%= ticketCategory.name %></th>
                                         <td align="center"><%= ticketCategory.description %></td>
