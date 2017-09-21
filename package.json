@@ -11,7 +11,7 @@
     "run-test": "npm-run-all -p -r db-run test"
   },
   "engines": {
-    "node": "0.12.7"
+    "node": "6.11.3"
   },
   "repository": {
     "type": "git",
