@@ -39,7 +39,6 @@
     "mongoose": "^4.3.6",
     "mongoose-csv": "^1.0.0",
     "mongoose-deep-populate": "^3.0.0",
-    "newrelic": "^1.35.1",
     "nodemailer": "^2.7.0",
     "nodemailer-wellknown": "^0.2.0",
     "npm-run-all": "^3.1.1",
