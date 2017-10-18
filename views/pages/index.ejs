@@ -121,9 +121,9 @@
                     <div class="col-md-8 col-md-offset-2 text-center">
                         <div class="fh5co-owl-text-wrap">
                             <div class="fh5co-owl-text">
-                                <h1 class="fh5co-lead to-animate">Student Speaker Salon</h1>
+                                <h1 class="fh5co-lead to-animate">2017 Student Speaker Salon</h1>
                                 <h2 class="fh5co-sub-lead to-animate">When: November 7th, 2017, 6-9pm</h2>
-                                <h2 class="fh5co-sub-lead to-animate">Where: TBA</h2>
+                                <h2 class="fh5co-sub-lead to-animate">Where: The Garage at Tech Square</h2>
                                 <p class="to-animate-2"><a href="http://www.facebook.com/sharer.php?u=https://tedxgeorgiatech.com&quote=<%= encodeURI("Hey everyone! TEDxGeorgiaTech is hosting a Student Speaker Salon on November 7th from 6-9pm! Spread the news!") %>" class="btn btn-primary btn-lg">Tell your Facebook friends!</a></p>
                                 <p class="to-animate-2"><a href="http://twitter.com/home?status=Hey everyone! @tedxgeorgiatech is hosting a Student Speaker Salon on November 7th from 6-9pm! Spread the news!" class="btn btn-primary btn-lg">Tell your Twitter followers!</a></p>
                             </div>
@@ -212,24 +212,13 @@
             <div class="col-md-12 section-heading text-center">
                 <h2 class="to-animate">EVENTS</h2>
                 <div class="row">
-                    <% if (events.length > 0) { %>
-                        <% events.forEach(function(item) {%>
-                            <div id="event-id-<%= item._id %>" class="col-md-8 col-md-offset-2 subtext to-animate">
-                                <h2 style="padding-top:30px;"><%= item.name %></h2>
-                                <h3 class='subtext to-animate'><span style="color:#444"> <%= moment(item.startDate).tz('America/New_York').format('LT') + " | " + moment(item.startDate).tz('America/New_York').format('LL') %> </span></h3>
-                                <h3><a href="http://maps.google.com/?q=<%=item.location%>"><%= item.location %></a></h3>
-                                <h3><%- item.description %></h3>
-
-                                <% if (moment().isAfter(item.startDate) || item.closed) { %>
-                                <p><a class="btn" style="background:#e62b1e; color:rgba(255,255,255,0.5);" target="_blank" href="#">Registration Closed</a></p>
-                                <% } else { %>
-                                <p><a class="btn" style="background:#e62b1e; color:rgba(255,255,255,1.0);" target="_blank" href="/event/<%= item._id %>">Reserve Seats!</a></p>
-                                <% } %>
-                            </div>
-                        <%});%>
-                    <% } else { %>
-                        <h3 class="to-animate"><span style="color:#444">No events coming up. Check out our previous events below!</span></h3>
-                    <% } %>
+                    <div id="event-id-0" class="col-md-8 col-md-offset-2 subtext to-animate">
+                        <h2 style="padding-top:30px;">2017 Student Speaker Salon</h2>
+                        <h3 class='subtext to-animate'><span style="color:#444">7-9pm | November 7, 2017</span></h3>
+                        <h3><a href="http://maps.google.com/?q=848 Spring St NW, Atlanta, GA 30308">The Garage at Tech Square (848 Spring St NW, Atlanta, GA 30308)</a></h3>
+                        <h3>With a local platform for local ideas to spark global impact, TEDxGeorgiaTech proud to invite YOU to attend our 3rd annual Student Speaker Salon. Six hand-selected Georgia Tech students are ready and willing to share six compelling ideas they wholeheartedly believe are worthy of your attention. Join us on Tuesday, November 7th at The Garage at Tech Square (beneath Square on Fifth) from 7PM - 9PM for a night of authenticity, vulnerability, empowerment, and actionable passion. Popcorn by Indulge Gourmet, refreshing Blue Donkey coffee, and t-shirts galore will also be available for FREE! We’re STOKED out of our minds to share this event with you, but we can only guarantee the first 100 attendees seats, food, and a t-shirt. RSVP asap to ensure your spot!</h3>
+                        <p><a class="btn" disabled="true" style="background:#e62b1e; color:rgba(255,255,255,1.0);" target="_blank" href="">Reserve your tickets starting Friday!</a></p>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12 section-heading text-center">
